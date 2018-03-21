@@ -9,13 +9,10 @@ LDFLAGS = -lrt -lm -pthread
 .PHONY: clean
 
 
-all: ep1sh ep1
+all: puzzle
 
 
-ep1sh: ep1sh.o error.o buffer.o
-	$(CC) -o $@ $^ -lrt -lreadline
-
-ep1: ep1.o error.o utilities.o minPQ.o roundrobin.o sjf.o priorityScheduler.o stack.o queue.o
+puzzle: puzzle.o error.o macros.h
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 %.o: %.c %.h
@@ -27,4 +24,4 @@ ep1: ep1.o error.o utilities.o minPQ.o roundrobin.o sjf.o priorityScheduler.o st
 
 
 clean:
-	rm -f *.o *~ *.out ep1sh ep1
+	rm -f *.o *~ *.out puzzle
