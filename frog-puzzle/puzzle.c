@@ -13,18 +13,15 @@
 #include "error.h"
 #include "macros.h"
 
-#define VAR 100
-
 pthread_mutex_t *board_mtx, counter_mtx;
 pthread_barrier_t bar;
 pthread_t *frogs;
 int *board;
-int counter, N;
+int counter, N, var;
 
 struct frog_t {
     int pos, id;
 };
-
 
 void debugPond(){
     printf("|");
@@ -44,10 +41,10 @@ void debugPond(){
 
 
 }
-int sign(int x) {
-    return (x < 0)? -1 : 1;
-}
 
+int sign(int x) {
+    return (x < 0)? -1 : ((x == 0)? 0 : 1);
+}
 
 void *frog(void *args) {
     struct frog_t *f = (struct frog_t*)args;
@@ -55,23 +52,26 @@ void *frog(void *args) {
     int id = f->id;
     int type = sign(f->id);
     int next, lastPos, oldPos;
+
+    // Wait for all threads to be ready
     pthread_barrier_wait(&bar);
-    while (counter < VAR*N) {
+
+    while (counter < var*N) {
         next = pos + type;
         lastPos = pos;
         if (next < N && next >= 0 && !board[next]) {
-            printf("Frog %d is waiting to jump to %d\n", id, next);
+            //printf("Frog %d is waiting to jump to %d\n", id, next);
             P(board_mtx + next);
             if (!board[next]) {
-                printf("%d: My destiny is free!\n", id);
+                //printf("%d: My destiny is free!\n", id);
                 P(board_mtx + pos);
                 oldPos = pos;
-                printf("Frog %d jumped from %d to %d\n", id, pos, next);
+                //printf("Frog %d jumped from %d to %d\n", id, pos, next);
                 board[pos] = 0;
                 board[next] = id;
                 pos = next;
-                V(board_mtx+oldPos);
-                printf("ESPERANDO MUTEX counterNormal.... %d\n", id);
+                V(board_mtx + oldPos);
+                //printf("ESPERANDO MUTEX counterNormal.... %d\n", id);
                 P(&counter_mtx);
                 counter = 0;
                 V(&counter_mtx);
@@ -79,18 +79,18 @@ void *frog(void *args) {
             V(board_mtx + next);
         }
         if (lastPos == pos && (next += type) < N && next >= 0 && !board[next]) {
-            printf("Frog %d is waiting to jump to %d\n", id, next);
+            //printf("Frog %d is waiting to jump to %d\n", id, next);
             P(board_mtx + next);
             if (!board[next]) {
-                printf("%d: My destiny is free!\n", id);
+                //printf("%d: My destiny is free!\n", id);
                 P(board_mtx + pos);
                 oldPos = pos;
-                printf("Frog %d jumped from %d to %d\n", id, pos, next);
+                //printf("Frog %d jumped from %d to %d\n", id, pos, next);
                 board[pos] = 0;
                 board[next] = id;
                 pos = next;
                 V(board_mtx + oldPos);
-                printf("ESPERANDO MUTEX (counter).... %d\n", id);
+                //printf("ESPERANDO MUTEX (counter).... %d\n", id);
                 P(&counter_mtx);
                 counter = 0;
                 V(&counter_mtx);
@@ -98,17 +98,18 @@ void *frog(void *args) {
             V(board_mtx + next);
         }
         if (lastPos == pos) {
-            printf("ESPERANDO MUTEX(counter lastPos).... %d\n", id);
+            //printf("ESPERANDO MUTEX(counter lastPos).... %d\n", id);
             P(&counter_mtx);
             counter++;
-            printf("Frog %d failed...\n", id);
+            //printf("Frog %d failed...\n", id);
             V(&counter_mtx);
         }
+        // pthread_barrier_wait(&bar);
+        // pthread_barrier_wait(&bar);
     }
-    printf("Frog %d quited\n", id);
+    //printf("Frog %d quited\n", id);
     free(args);
-    debugPond();
-    printf("ESPERANDO BARREIRA.... %d\n", id);
+    //printf("ESPERANDO BARREIRA.... %d\n", id);
     pthread_barrier_wait(&bar);
     pthread_exit(NULL);
 }
@@ -123,43 +124,72 @@ struct frog_t *createFrog(int pos, int id) {
 
 int main(int argc, char const *argv[]) {
     set_prog_name("frog-puzzle");
+
+    var = 100;
+    bool ok = true;
+    int noTests = 100000;
+    int success = 0;
+
+    // number of stones in total
+    N = 5;
+
     // frogs
-    N = 3;
     int mFrogs = (N - 1)/2;
     int fFrogs = (N - 1)/2;
     struct frog_t *f;
-    // number of stones in total
 
     // initializing structs
-    counter = 0;
     board = emalloc(N*sizeof(int));
     board_mtx = emalloc(N*sizeof(pthread_mutex_t));
-    frogs = emalloc((N - 1)*sizeof(pthread_t));
     pthread_barrier_init(&bar, NULL, N);
     pthread_mutex_init(&counter_mtx, NULL);
     for (int i = 0; i < N; i++)
         pthread_mutex_init(board_mtx + i, NULL);
-    for (int i = 0; i < mFrogs; i++){
-        f = createFrog(i, i + 1);
-        pthread_create(frogs + i, NULL, &frog, (void*)f);
-        board[i] = i + 1;
-    }
-    for (int i = 0; i < fFrogs; i++) {
-        f = createFrog(N - i - 1, -(i + 1));
-        pthread_create(frogs + N - i - 1, NULL, &frog, (void*)f);
-        board[N - i - 1] = -(i + 1);
-    }
-    board[mFrogs] = 0;
-    printf("I'M WAITING\n\n\n\n\n");
-    pthread_barrier_wait(&bar);
-    pthread_barrier_wait(&bar);
 
-    for (int i = 0; i < N; i++)
-        printf("%d, ", board[i]);
-    printf("\n");
+    for (int i = 0; i < noTests; i++) {
+        counter = 0;
+        frogs = emalloc((N - 1)*sizeof(pthread_t));
+        for (int i = 0; i < mFrogs; i++){
+            f = createFrog(i, i + 1);
+            pthread_create(frogs + i, NULL, &frog, (void*)f);
+            pthread_detach(frogs[i]);
+            board[i] = i + 1;
+        }
+        for (int i = 0; i < fFrogs; i++) {
+            f = createFrog(N - i - 1, -(i + 1));
+            pthread_create(frogs + N - i - 1, NULL, &frog, (void*)f);
+            pthread_detach(frogs[N - i - 1]);
+            board[N - i - 1] = -(i + 1);
+        }
+        board[mFrogs] = 0;
+        //printf("I'M WAITING\n\n\n\n\n");
+        pthread_barrier_wait(&bar);
+
+        /*while (true) {
+        pthread_barrier(&bar);
+        // verifica && break
+        pthread_barrier(&bar);
+        }*/
+
+        pthread_barrier_wait(&bar);
+
+        //debugPond();
+
+        ok = true;
+        for (int i = 0; i < fFrogs && ok; i++)
+            ok &= (sign(board[i]) == -1);
+        ok &= (sign(board[fFrogs]) == 0);
+        for (int i = fFrogs + 1; i < N && ok; i++)
+            ok &= (sign(board[i]) == 1);
+
+        success += ok;
+
+        free(frogs);
+    }
+
+    printf("Success rate: %f%%\n", 100.0*success/noTests);
 
     free(board);
     free(board_mtx);
-    free(frogs);
     pthread_exit(NULL);
 }
