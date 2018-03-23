@@ -48,12 +48,13 @@ int sign(int x) {
     return (x < 0)? -1 : 1;
 }
 
+
 void *frog(void *args) {
     struct frog_t *f = (struct frog_t*)args;
     int pos = f->pos;
     int id = f->id;
     int type = sign(f->id);
-    int next, lastPos;
+    int next, lastPos, oldPos;
     pthread_barrier_wait(&bar);
     while (counter < VAR*N) {
         next = pos + type;
@@ -64,12 +65,13 @@ void *frog(void *args) {
             if (!board[next]) {
                 printf("%d: My destiny is free!\n", id);
                 P(board_mtx + pos);
+                oldPos = pos;
                 printf("Frog %d jumped from %d to %d\n", id, pos, next);
                 board[pos] = 0;
                 board[next] = id;
                 pos = next;
-                V(board_mtx + pos);
-                printf("ESPERANDO MUTEX.... %d\n", id);
+                V(board_mtx+oldPos);
+                printf("ESPERANDO MUTEX counterNormal.... %d\n", id);
                 P(&counter_mtx);
                 counter = 0;
                 V(&counter_mtx);
@@ -82,12 +84,13 @@ void *frog(void *args) {
             if (!board[next]) {
                 printf("%d: My destiny is free!\n", id);
                 P(board_mtx + pos);
+                oldPos = pos;
                 printf("Frog %d jumped from %d to %d\n", id, pos, next);
                 board[pos] = 0;
                 board[next] = id;
                 pos = next;
-                V(board_mtx + pos);
-                printf("ESPERANDO MUTEX.... %d\n", id);
+                V(board_mtx + oldPos);
+                printf("ESPERANDO MUTEX (counter).... %d\n", id);
                 P(&counter_mtx);
                 counter = 0;
                 V(&counter_mtx);
@@ -95,7 +98,7 @@ void *frog(void *args) {
             V(board_mtx + next);
         }
         if (lastPos == pos) {
-            printf("ESPERANDO MUTEX.... %d\n", id);
+            printf("ESPERANDO MUTEX(counter lastPos).... %d\n", id);
             P(&counter_mtx);
             counter++;
             printf("Frog %d failed...\n", id);
