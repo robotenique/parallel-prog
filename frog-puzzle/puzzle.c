@@ -211,6 +211,7 @@ int main(int argc, char const *argv[]) {
     printf("Success rate: %f%%\n", 100.0*success/noTests);
 
     free(board);
+    free(frogs);
     free(board_mtx);
     pthread_exit(NULL);
 }
