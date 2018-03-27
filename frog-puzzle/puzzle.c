@@ -58,6 +58,7 @@ void *frog(void *args) {
     pthread_barrier_wait(&bar);
 
     while (counter < var*N) {
+        printf("SAPO FAZENDO ALGUMA COISA...%d\n", rand()%N);
         next = pos + type;
         lastPos = pos;
         if (next < N && next >= 0 && !board[next]) {
@@ -101,7 +102,7 @@ void *frog(void *args) {
             V(board_mtx + next);
         }
         if (lastPos == pos) {
-             //printf("ESPERANDO MUTEX(counter lastPos).... %d\n", id);
+             printf("ESPERANDO MUTEX(counter lastPos).... %d\n", id);
             P(&counter_mtx);
             counter++;
              //printf("Frog %d failed...\n", id);
@@ -206,28 +207,27 @@ int main(int argc, char const *argv[]) {
         board[mFrogs] = 0;
 
         pthread_barrier_wait(&bar);
-
         bool foundDeadlock = false;
-        while (!foundDeadlock) {
-            sleepFor(10);
+        while (!foundDeadlock || counter < var*N) {
             if(board[freeRock] == 0) {
-                debugPond();
+                //debugPond();
                 printf("Checking Deadlocks ... \n");
                 if(freeRock > 0 && board[freeRock - 1] > 0)
-                    continue;
+                continue;
                 else if(freeRock > 1 && board[freeRock - 2] > 0)
-                    continue;
+                continue;
                 else if(freeRock < N - 1 && board[freeRock + 1] < 0)
-                    continue;
+                continue;
                 else if(freeRock < N - 2 && board[freeRock + 2] < 0)
-                    continue;
+                continue;
                 else
-                    foundDeadlock = true;
+                foundDeadlock = true;
             }
         }
         if(foundDeadlock){
             printf("ACHEI DEADLOCKKK...\n");
         }
+
 
         pthread_barrier_wait(&bar);
 
