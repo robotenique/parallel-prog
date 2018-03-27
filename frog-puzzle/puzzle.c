@@ -1,4 +1,4 @@
-/*
+    /*
  * @author: João Gabriel Basi Nº USP: 9793801
  * @author: Juliano Garcia de Oliveira Nº USP: 9277086
  *
@@ -18,7 +18,7 @@ pthread_mutex_t *board_mtx, counter_mtx;
 pthread_barrier_t bar;
 pthread_t *threads;
 int *board;
-int counter, N, var;
+int counter, N, var, freeRock;
 
 typedef struct frog_t {
     int pos, id;
@@ -69,6 +69,7 @@ void *frog(void *args) {
                 oldPos = pos;
                 // printf("Frog %d jumped from %d to %d\n", id, pos, next);
                 board[pos] = 0;
+                freeRock = pos;
                 board[next] = id;
                 pos = next;
                 V(board_mtx + oldPos);
@@ -88,6 +89,7 @@ void *frog(void *args) {
                 oldPos = pos;
                 // printf("Frog %d jumped from %d to %d\n", id, pos, next);
                 board[pos] = 0;
+                freeRock = pos;
                 board[next] = id;
                 pos = next;
                 V(board_mtx + oldPos);
@@ -143,6 +145,10 @@ void shuffle(Frog *frogs, int n) {
      }
 }
 
+void cleanArray(bool *arr){
+    for (int i = 0; i < N - 1; i++)
+        arr[i] = false;
+}
 
 int main(int argc, char const *argv[]) {
     set_prog_name("frog-puzzle");
@@ -150,19 +156,33 @@ int main(int argc, char const *argv[]) {
 
     var = 100;
     bool ok = true;
-    int noTests = 100000;
+    int noTests = 1;
     int success = 0;
-
     // number of stones in total
-    N = 3;
+    //N = 6;
+    if(argc < 2)
+        die("Wrong number of arguments!\nUsage ./puzzle <number of rocks>");
+    N = atoi(argv[1]);
+    if (N%2==0)
+        die("Number of rocks must be an odd integer...");
+
+    bool *frogIndexer = emalloc((N-1)*sizeof(bool));
+    cleanArray(frogIndexer);
 
     // frogs
     int mFrogs = (N - 1)/2;
     int fFrogs = (N - 1)/2;
     Frog *frogs;
+    freeRock = N/2;
+    printf("FREEROCK %d\n", freeRock);
 
     // initializing structs
     frogs = createFrogs(mFrogs, fFrogs);
+    /*
+    for (int i = 0; i < N - 1; i++)
+        printf("Sapo %d, ", frogs[i].id >= 0 ? frogs[i].id - 1 : abs(frogs[i].id) - 1 + (N-1)/2);
+    */
+
     board = emalloc(N*sizeof(int));
     board_mtx = emalloc(N*sizeof(pthread_mutex_t));
     pthread_barrier_init(&bar, NULL, N);
@@ -186,14 +206,17 @@ int main(int argc, char const *argv[]) {
         pthread_barrier_wait(&bar);
 
         /*while (true) {
-        pthread_barrier(&bar);
-        // verifica && break
-        pthread_barrier(&bar);
-        }*/
+        pthread_barrier_wait(&bar);
+
+
+        pthread_barrier_wait(&bar);
+        cleanArray(frogIndexer);
+        sleepFor(5);
+    }*/
 
         pthread_barrier_wait(&bar);
 
-        //debugPond();
+        debugPond();
 
         // Verify if the game whether solved or not
         ok = true;
@@ -209,7 +232,6 @@ int main(int argc, char const *argv[]) {
     }
 
     printf("Success rate: %f%%\n", 100.0*success/noTests);
-
     free(board);
     free(frogs);
     free(board_mtx);

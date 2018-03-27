@@ -12,7 +12,7 @@ LDFLAGS = -lrt -lm -pthread
 all: puzzle
 
 
-puzzle: puzzle.o error.o macros.h
+puzzle: puzzle.o error.o macros.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 %.o: %.c %.h
