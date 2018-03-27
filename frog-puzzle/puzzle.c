@@ -19,6 +19,7 @@ pthread_barrier_t bar;
 pthread_t *threads;
 int *board;
 int counter, N, var, freeRock;
+bool foundDeadlock;
 
 typedef struct frog_t {
     int pos, id;
@@ -57,8 +58,8 @@ void *frog(void *args) {
     // Wait for all threads to be ready
     pthread_barrier_wait(&bar);
 
-    while (counter < var*N) {
-        printf("SAPO FAZENDO ALGUMA COISA...%d\n", rand()%N);
+    while (!foundDeadlock && counter < var*N) {
+        printf("SAPO FAZENDO ALGUMA COISA...%d\n", id);
         next = pos + type;
         lastPos = pos;
         if (next < N && next >= 0 && !board[next]) {
@@ -102,7 +103,7 @@ void *frog(void *args) {
             V(board_mtx + next);
         }
         if (lastPos == pos) {
-             printf("ESPERANDO MUTEX(counter lastPos).... %d\n", id);
+            printf("ESPERANDO MUTEX(counter lastPos).... %d\n", id);
             P(&counter_mtx);
             counter++;
              //printf("Frog %d failed...\n", id);
@@ -111,7 +112,8 @@ void *frog(void *args) {
         // pthread_barrier_wait(&bar);
         // pthread_barrier_wait(&bar);
     }
-     //printf("Frog %d quited\n", id);
+    printf("Frog %d quited\n", id);
+    printf("counter = %d foundDeadlock = %d\n", counter, foundDeadlock);
     //printf("ESPERANDO BARREIRA.... %d\n", id);
     pthread_barrier_wait(&bar);
     pthread_exit(NULL);
@@ -205,35 +207,38 @@ int main(int argc, char const *argv[]) {
             //printf("pos = %d, id = %d\n", frogs[i].pos, frogs[i].id);
         }
         board[mFrogs] = 0;
+        foundDeadlock = false;
 
         pthread_barrier_wait(&bar);
-        bool foundDeadlock = false;
-        while (!foundDeadlock || counter < var*N) {
+        while (!foundDeadlock && counter < var*N) {
             if(board[freeRock] == 0) {
                 //debugPond();
-                printf("Checking Deadlocks ... \n");
+                //printf("Checking Deadlocks ... \n");
                 if(freeRock > 0 && board[freeRock - 1] > 0)
-                continue;
+                    continue;
                 else if(freeRock > 1 && board[freeRock - 2] > 0)
-                continue;
+                    continue;
                 else if(freeRock < N - 1 && board[freeRock + 1] < 0)
-                continue;
+                    continue;
                 else if(freeRock < N - 2 && board[freeRock + 2] < 0)
-                continue;
+                    continue;
                 else
-                foundDeadlock = true;
+                    foundDeadlock = true;
+            }
+            else {
+                //printf("MISS\n");
             }
         }
-        if(foundDeadlock){
+        if(foundDeadlock)
             printf("ACHEI DEADLOCKKK...\n");
-        }
-
+        else
+            printf("NÃO ACHEI DEADLOCK...\n");
 
         pthread_barrier_wait(&bar);
 
         debugPond();
 
-        // Verify if the game whether solved or not
+        // Verify if the game was solved or not
         ok = true;
         for (int i = 0; i < fFrogs && ok; i++)
             ok &= (sign(board[i]) == -1);
