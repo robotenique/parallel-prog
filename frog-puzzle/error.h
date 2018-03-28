@@ -1,15 +1,15 @@
 /*
- João Gabriel Basi Nº USP: 9793801
- Juliano Garcia de Oliveira Nº USP: 9277086
-
-  MAC0219
-  26/03/19
-  error.h
-  Error-handling routines.
-  This code is an adaptation of the module provided during
-  our MAC216 course.
-  https://www.ime.usp.br/~fmario/cursos/mac216-15/
-*/
+ * @author: João Gabriel Basi Nº USP: 9793801
+ * @author: Juliano Garcia de Oliveira Nº USP: 9277086
+ *
+ * MAC0219
+ * 26/03/19
+ *
+ * Error-handling routines.
+ * This code is an adaptation of the module provided during
+ * our MAC216 course.
+ * https://www.ime.usp.br/~fmario/cursos/mac216-15/
+ */
 
 #ifndef __ERROR_H__
 #define __ERROR_H__

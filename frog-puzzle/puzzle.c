@@ -1,4 +1,4 @@
-    /*
+/*
  * @author: João Gabriel Basi Nº USP: 9793801
  * @author: Juliano Garcia de Oliveira Nº USP: 9277086
  *
@@ -26,11 +26,12 @@ typedef struct frog_t {
     int pos, id;
 } Frog;
 
-
+// Get the sign of a number
 int sign(int x) {
     return (x < 0)? -1 : ((x == 0)? 0 : 1);
 }
 
+// Frog thread function
 void *frog(void *args) {
     Frog *f = (Frog*)args;
     int pos = f->pos;
@@ -44,9 +45,12 @@ void *frog(void *args) {
     while (!foundDeadlock && counter < var*N) {
         next = pos + type;
         lastPos = pos;
+        // Check if an adjacent position exists and is available
         if (next < N && next >= 0 && !board[next]) {
             P(board_mtx + next);
             if (!board[next]) {
+                // Change this frog position and change the value of some
+                // control variables
                 P(board_mtx + pos);
                 oldPos = pos;
                 board[pos] = 0;
@@ -54,15 +58,19 @@ void *frog(void *args) {
                 board[next] = id;
                 pos = next;
                 V(board_mtx + oldPos);
+                // Reset the counter variable
                 P(&counter_mtx);
                 counter = 0;
                 V(&counter_mtx);
             }
             V(board_mtx + next);
         }
+        // Check if this frog can jump another one to land at an empty rock
         if (lastPos == pos && (next += type) < N && next >= 0 && !board[next]) {
             P(board_mtx + next);
             if (!board[next]) {
+                // Change this frog position and change the value of some
+                // control variables
                 P(board_mtx + pos);
                 oldPos = pos;
                 board[pos] = 0;
@@ -70,23 +78,27 @@ void *frog(void *args) {
                 board[next] = id;
                 pos = next;
                 V(board_mtx + oldPos);
+                // Reset the counter variable
                 P(&counter_mtx);
                 counter = 0;
                 V(&counter_mtx);
-
             }
             V(board_mtx + next);
         }
+        // If this couldn't move, add one to the counter variable
         if (lastPos == pos) {
             P(&counter_mtx);
             counter++;
             V(&counter_mtx);
         }
     }
+
+    // Wait for all threads to end, so main can continue
     pthread_barrier_wait(&bar);
     pthread_exit(NULL);
 }
 
+// Create a single frog at position "pos" and ID "id"
 Frog createFrog(int pos, int id) {
     Frog f;
     f.pos = pos;
@@ -94,6 +106,7 @@ Frog createFrog(int pos, int id) {
     return f;
 }
 
+// Create a vector with "mFrogs" male frogs and "fFrogs" female frogs
 Frog *createFrogs(int mFrogs, int fFrogs) {
     Frog *frogs;
     int n = mFrogs + fFrogs;
@@ -105,6 +118,7 @@ Frog *createFrogs(int mFrogs, int fFrogs) {
     return frogs;
 }
 
+// Shuffle a vector of frogs with size n
 void shuffle(Frog *frogs, int n) {
      int j;
      Frog tmp;
@@ -116,35 +130,24 @@ void shuffle(Frog *frogs, int n) {
      }
 }
 
-void cleanArray(bool *arr){
-    for (int i = 0; i < N - 1; i++)
-        arr[i] = false;
-}
-
-void freeAll(){
-
-}
-
 int main(int argc, char const *argv[]) {
     set_prog_name("frog-puzzle");
     srand(time(NULL));
 
-    var = 1000;
-    bool ok = true;
-    int noTests = 10;
+    Frog *frogs;
+    int noTests = 10000;
     int success = 0;
-    // number of stones in total
-    //N = 6;
-    if(argc < 2)
+    bool ok = true;
+    var = 1000;
+
+    if (argc < 2)
         die("Wrong number of arguments!\nUsage ./puzzle <number of rocks>");
     N = atoi(argv[1]);
-    if (N%2==0)
+    if (N%2 == 0)
         die("Number of rocks must be an odd integer...");
 
-    // frogs
     int mFrogs = (N - 1)/2;
     int fFrogs = (N - 1)/2;
-    Frog *frogs;
     freeRock = N/2;
 
     // initializing structs
@@ -160,6 +163,7 @@ int main(int argc, char const *argv[]) {
     for (int k = 0; k < noTests; k++) {
         counter = 0;
         threads = emalloc((N - 1)*sizeof(pthread_t));
+        // Shuffle frogs' vector, so the threads are initialized randomly
         shuffle(frogs, mFrogs + fFrogs);
         for (int i = 0; i < mFrogs + fFrogs; i++) {
             pthread_create(threads + i, NULL, &frog, (void*)(frogs + i));
@@ -169,27 +173,27 @@ int main(int argc, char const *argv[]) {
         board[mFrogs] = 0;
         foundDeadlock = false;
 
+        // Wait for all threads to be ready
         pthread_barrier_wait(&bar);
+
         // The main thread is the manager thread to check deadlock
         while (counter < var*N && !foundDeadlock) {
-            P(&counter_mtx);
-                if(counter >= var*N)
-                    foundDeadlock = true;
-            V(&counter_mtx);
             // Check if a frog can move to the freeRock
-            if(board[freeRock] == 0) {
-                if(freeRock > 0 && board[freeRock - 1] > 0)
+            if (board[freeRock] == 0) {
+                if (freeRock > 0 && board[freeRock - 1] > 0)
                     continue;
-                else if(freeRock > 1 && board[freeRock - 2] > 0)
+                else if (freeRock > 1 && board[freeRock - 2] > 0)
                     continue;
-                else if(freeRock < N - 1 && board[freeRock + 1] < 0)
+                else if (freeRock < N - 1 && board[freeRock + 1] < 0)
                     continue;
-                else if(freeRock < N - 2 && board[freeRock + 2] < 0)
+                else if (freeRock < N - 2 && board[freeRock + 2] < 0)
                     continue;
                 else
                     foundDeadlock = true;
             }
         }
+
+        // Wait for other threads to end
         pthread_barrier_wait(&bar);
 
         // Verify if the game was solved or not
