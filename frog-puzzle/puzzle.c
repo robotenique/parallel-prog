@@ -26,6 +26,18 @@ typedef struct frog_t {
     int pos, id;
 } Frog;
 
+// Print the stone vector with frogs IDs
+void debugPond(){
+    printf("|");
+    for (int i = 0; i < N; i++)
+        if (board[i] > 0)
+            printf("\x1b[96m%2d\x1b[0m|%s", board[i], (i == N - 1)? "\n" : "");
+        else if (board[i] < 0)
+            printf("\x1b[95m%2d\x1b[0m|%s", board[i], (i == N - 1)? "\n" : "");
+        else
+            printf("%2d|%s", board[i], (i == N - 1)? "\n" : "");
+}
+
 // Get the sign of a number
 int sign(int x) {
     return (x < 0)? -1 : ((x == 0)? 0 : 1);
@@ -138,7 +150,7 @@ int main(int argc, char const *argv[]) {
     int noTests = 10000;
     int success = 0;
     bool ok = true;
-    var = 1000;
+    var = 10000;
 
     if (argc < 2)
         die("Wrong number of arguments!\nUsage ./puzzle <number of rocks>");
@@ -163,8 +175,10 @@ int main(int argc, char const *argv[]) {
     for (int k = 0; k < noTests; k++) {
         counter = 0;
         threads = emalloc((N - 1)*sizeof(pthread_t));
+
         // Shuffle frogs' vector, so the threads are initialized randomly
         shuffle(frogs, mFrogs + fFrogs);
+
         for (int i = 0; i < mFrogs + fFrogs; i++) {
             pthread_create(threads + i, NULL, &frog, (void*)(frogs + i));
             pthread_detach(threads[i]);
@@ -195,6 +209,9 @@ int main(int argc, char const *argv[]) {
 
         // Wait for other threads to end
         pthread_barrier_wait(&bar);
+
+        // Print pond
+        debugPond();
 
         // Verify if the game was solved or not
         ok = true;
