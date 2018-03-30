@@ -147,7 +147,7 @@ int main(int argc, char const *argv[]) {
     srand(time(NULL));
 
     Frog *frogs;
-    int noTests = 10000;
+    int noTests = 1;
     int success = 0;
     bool ok = true;
     var = 10000;
@@ -226,7 +226,7 @@ int main(int argc, char const *argv[]) {
         free(threads);
     }
 
-    printf("Success rate: %f%%\n", 100.0*success/noTests);
+    //printf("Success rate: %f%%\n", 100.0*success/noTests);
     free(board);
     free(frogs);
     free(board_mtx);
