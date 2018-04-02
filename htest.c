@@ -78,8 +78,12 @@ int main() {
 
 
 	globalAcc = 0;
-	clock_t t;
-	t = clock();
+
+	struct timespec start, finish;
+	double elapsed;
+
+	clock_gettime(CLOCK_MONOTONIC, &start);
+
 	pthread_mutex_init(&mut1, NULL);
 	pthread_barrier_init(&bar, NULL, NUM_THREADS + 1);
 	pthread_create(&t1, NULL, &calcDummy, (void*)(&id1));
@@ -90,14 +94,17 @@ int main() {
 	pthread_detach(t1);
 	pthread_detach(t2);
 
-    // Wait for all threads to be ready
-    pthread_barrier_wait(&bar);
+	// Wait for all threads to be ready
+	pthread_barrier_wait(&bar);
 
 	// Wait for all threads to finish
 	pthread_barrier_wait(&bar);
-	t = clock() - t;
-	double time_taken = 100*((double)t)/CLOCKS_PER_SEC;
-	printf("\ntime of calculation = %fms\n\n", time_taken);
+
+	clock_gettime(CLOCK_MONOTONIC, &finish);
+
+	elapsed = (finish.tv_sec - start.tv_sec);
+	elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+	printf("\ntime of calculation = %fs\n\n", elapsed);
 
 	return 0;
 }
