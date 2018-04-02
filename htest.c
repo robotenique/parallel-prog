@@ -5,13 +5,43 @@
 #include <float.h>
 #include <time.h>
 #define MAX_ITER 90000000
+#define MAX_WRITING 90000
 #define NUM_THREADS 5
 
 pthread_barrier_t bar;
 pthread_t t1, t2, t3, t4, t5;
 pthread_mutex_t mut1;
+FILE *globalFile;
+char randomText[] = " Eu te avisei Mas não quis me ouvir Deixou eu morrer Uma hora assim Eu vou renascer Gostar mais de mim Sofrer é de lei Tudo tem um fimPra não morrer de um mal de amor Um outro dia, um novo amor Para me curarViolento é o amor Hoje eu peço paz Agora quem não quer sou eu, não Não quero mais Lará-laiá-laiá Nada do que foi será Pois tudo passa Tudo passará Quem levou a pior fui eu Um dia fomos um só Pensei Que jogo louco é o amor Quem ama sai perdedor No submundo onde estou Podepá, eu vou voltar (Preciso fumar) (Mal de amor, mal de amor)(Nosso show já terminou)";
 volatile unsigned long int counter;
 volatile float var1, var2, var3, var4, globalAcc;
+
+void *writeDummy(void *args) {
+	int id = *(int*)args;
+	char file[] = "fileN.txt";
+	file[4] = id + '0';
+	pthread_barrier_wait(&bar);
+	int myCounter = 0;
+	while(myCounter < MAX_WRITING/NUM_THREADS){
+		FILE *f = fopen(file, "w");
+		const char *text = "Write this to the file";
+		fprintf(f, "Some text: %s\n", text);
+		fclose(f);
+		myCounter++;
+		if(myCounter%50 == 0){
+			pthread_mutex_lock(&mut1);
+			globalFile = fopen("global.txt", "a");
+			fprintf(globalFile, "%s\n", randomText);
+			fclose(globalFile);
+			pthread_mutex_unlock(&mut1);
+		}
+	}
+	pthread_barrier_wait(&bar);
+	pthread_exit(NULL);
+
+
+}
+
 
 void *calcDummy(void *args) {
 	int id = *(int*)args;
@@ -82,15 +112,16 @@ int main() {
 	struct timespec start, finish;
 	double elapsed;
 
+
 	clock_gettime(CLOCK_MONOTONIC, &start);
 
 	pthread_mutex_init(&mut1, NULL);
 	pthread_barrier_init(&bar, NULL, NUM_THREADS + 1);
-	pthread_create(&t1, NULL, &calcDummy, (void*)(&id1));
-	pthread_create(&t2, NULL, &calcDummy, (void*)(&id2));
-	pthread_create(&t3, NULL, &calcDummy, (void*)(&id3));
-	pthread_create(&t4, NULL, &calcDummy, (void*)(&id4));
-	pthread_create(&t5, NULL, &calcDummy, (void*)(&id5));
+	pthread_create(&t1, NULL, &writeDummy, (void*)(&id1));
+	pthread_create(&t2, NULL, &writeDummy, (void*)(&id2));
+	pthread_create(&t3, NULL, &writeDummy, (void*)(&id3));
+	pthread_create(&t4, NULL, &writeDummy, (void*)(&id4));
+	pthread_create(&t5, NULL, &writeDummy, (void*)(&id5));
 	pthread_detach(t1);
 	pthread_detach(t2);
 

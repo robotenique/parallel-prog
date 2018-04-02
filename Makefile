@@ -24,4 +24,4 @@ htest: htest.o
 
 
 clean:
-	rm -f *.o *~ *.out htest
+	rm -f *.o *~ *.out htest file* global*
