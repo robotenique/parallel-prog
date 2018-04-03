@@ -6,7 +6,6 @@
 #include <time.h>
 #include "error.h"
 
-#define MAX_ITER 90000000
 #define MAX_WRITING 900000
 #define NUM_THREADS 5
 #define BILLION 1000000000.0
@@ -34,7 +33,7 @@ void *writeDummy(void *args) {
 
 
 int main() {
-	set_prog_name("hyperthreading test");
+	set_prog_name("hyper-threading-test");
 	srand(time(NULL));
 
 	struct timespec start, finish;
@@ -62,7 +61,7 @@ int main() {
 
 	elapsed = (finish.tv_sec - start.tv_sec);
 	elapsed += (finish.tv_nsec - start.tv_nsec) / BILLION;
-	printf("\ntime of calculation = %fs\n\n", elapsed);
+	printf("\nTime of execution = %fs\n\n", elapsed);
 
 	free(threads);
 
