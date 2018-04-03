@@ -12,7 +12,7 @@ LDFLAGS = -lrt -lm -pthread
 all: htest
 
 
-htest: htest.o
+puzzle: htest.o error.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 %.o: %.c %.h
@@ -24,4 +24,4 @@ htest: htest.o
 
 
 clean:
-	rm -f *.o *~ *.out htest file* global*
+	rm -f *.o *~ *.out htest file*
