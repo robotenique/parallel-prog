@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <error.h>
 #include <pthread.h>
 #include <math.h>
 #include <float.h>
 #include <time.h>
+#include "error.h"
 
 #define MAX_ITER 90000000
 #define MAX_WRITING 900000
@@ -21,7 +21,6 @@ void *writeDummy(void *args) {
 	const char *text = "Write this to the file";
 	FILE *f;
 	file[4] = id + '0';
-	printf("%s\n", file);
 	pthread_barrier_wait(&bar);
 	while (myCounter < MAX_WRITING/NUM_THREADS){
 		f = efopen(file, "w");

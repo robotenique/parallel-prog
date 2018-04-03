@@ -12,7 +12,7 @@ LDFLAGS = -lrt -lm -pthread
 all: htest
 
 
-puzzle: htest.o error.o
+htest: htest.o error.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 %.o: %.c %.h
