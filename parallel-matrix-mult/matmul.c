@@ -6,9 +6,13 @@
 
 int IMPL_TYPE;
 
-void matmul_seq(Matrix A, int ini_ar, int ini_ac,
-                Matrix B, int ini_br, int ini_bc,
-                Matrix C, int size_ar, int size_ac, int size_bc) {
+void matmul_seq(Matrix A, Matrix B, Matrix C) {
+    matmul_seq_rec(mtx_A, 0, 0, mtx_B, 0, 0, mtx_C, mtx_A->n, mtx_A->m, mtx_B->m);
+}
+
+void matmul_seq_rec(Matrix A, int ini_ar, int ini_ac,
+                    Matrix B, int ini_br, int ini_bc,
+                    Matrix C, int size_ar, int size_ac, int size_bc) {
     if (!size_ac || !size_ar || !size_bc)
         return ;
     if (size_ar == 1 && size_ac == 1 && size_bc == 1) {
@@ -18,24 +22,24 @@ void matmul_seq(Matrix A, int ini_ar, int ini_ac,
     int new_size_ar = size_ar/2;
     int new_size_ac = size_ac/2;
     int new_size_bc = size_bc/2;
-    matmul_seq(A, ini_ar, ini_ac, B, ini_br, ini_bc,
-               C, new_size_ar, new_size_ac, new_size_bc);
-    matmul_seq(A, ini_ar, ini_ac, B, ini_br, ini_bc + new_size_bc,
-               C, new_size_ar, new_size_ac, size_bc - new_size_bc);
-    matmul_seq(A, ini_ar + new_size_ar, ini_ac, B, ini_br, ini_bc,
-               C, size_ar - new_size_ar, new_size_ac, new_size_bc);
-    matmul_seq(A, ini_ar + new_size_ar, ini_ac, B, ini_br, ini_bc + new_size_bc,
-               C, size_ar - new_size_ar, new_size_ac, size_bc - new_size_bc);
+    matmul_seq_rec(A, ini_ar, ini_ac, B, ini_br, ini_bc,
+        C, new_size_ar, new_size_ac, new_size_bc);
+    matmul_seq_rec(A, ini_ar, ini_ac, B, ini_br, ini_bc + new_size_bc,
+        C, new_size_ar, new_size_ac, size_bc - new_size_bc);
+    matmul_seq_rec(A, ini_ar + new_size_ar, ini_ac, B, ini_br, ini_bc,
+        C, size_ar - new_size_ar, new_size_ac, new_size_bc);
+    matmul_seq_rec(A, ini_ar + new_size_ar, ini_ac, B, ini_br, ini_bc + new_size_bc,
+        C, size_ar - new_size_ar, new_size_ac, size_bc - new_size_bc);
 
     // Originally this 4 lines are made using a temporary matrix T instead of C
-    matmul_seq(A, ini_ar, ini_ac + new_size_ac, B, ini_br + new_size_ac, ini_bc,
-               C, new_size_ar, size_ac - new_size_ac, new_size_bc);
-    matmul_seq(A, ini_ar, ini_ac + new_size_ac, B, ini_br + new_size_ac, ini_bc + new_size_bc,
-               C, new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc);
-    matmul_seq(A, ini_ar + new_size_ar, ini_ac + new_size_ac, B, ini_br + new_size_ac, ini_bc,
-               C, size_ar - new_size_ar, size_ac - new_size_ac, new_size_bc);
-    matmul_seq(A, ini_ar + new_size_ar, ini_ac + new_size_ac, B, ini_br + new_size_ac, ini_bc + new_size_bc,
-               C, size_ar - new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc);
+    matmul_seq_rec(A, ini_ar, ini_ac + new_size_ac, B, ini_br + new_size_ac, ini_bc,
+        C, new_size_ar, size_ac - new_size_ac, new_size_bc);
+    matmul_seq_rec(A, ini_ar, ini_ac + new_size_ac, B, ini_br + new_size_ac, ini_bc + new_size_bc,
+        C, new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc);
+    matmul_seq_rec(A, ini_ar + new_size_ar, ini_ac + new_size_ac, B, ini_br + new_size_ac, ini_bc,
+        C, size_ar - new_size_ar, size_ac - new_size_ac, new_size_bc);
+    matmul_seq_rec(A, ini_ar + new_size_ar, ini_ac + new_size_ac, B, ini_br + new_size_ac, ini_bc + new_size_bc,
+        C, size_ar - new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc);
 
     // With the temporary matrix T, C and T are added up recursively here
     // add(C, T);
@@ -63,14 +67,13 @@ int main(int argc, char const *argv[]) {
     Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
     //print_matrix(mtx_A);
     //print_matrix(mtx_B);
-    matmul_seq(mtx_A, 0, 0, mtx_B, 0, 0, mtx_C, mtx_A->n, mtx_A->m, mtx_B->m);
+    matmul_seq(mtx_A, mtx_B, mtx_C);
     print_matrix(mtx_C);
-    reset_matrix(mtx_B);
-    matmul_seq(mtx_A, 0, 0, mtx_C, 0, 0, mtx_B, mtx_A->n, mtx_A->m, mtx_C->m);
+    matmul_seq(mtx_A, mtx_C, mtx_B);
     print_matrix(mtx_B);
-    reset_matrix(mtx_C);
-    matmul_seq(mtx_A, 0, 0, mtx_B, 0, 0, mtx_C, mtx_A->n, mtx_A->m, mtx_B->m);
+    matmul_seq(mtx_A, mtx_B, mtx_C);
     print_matrix(mtx_C);
+
     // write_matrix(mtx_C);
 
 }
