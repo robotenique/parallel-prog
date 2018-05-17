@@ -8,8 +8,9 @@ def convert(mtx):
                 print(f"{i + 1} {j + 1} {mtx[i][j]}")
 
 def main():
-    mtx = [[-1, 3],
-           [4, 2]
+    mtx = [[1, 2, 3],
+           [1, 2, 3],
+           [1, 2, 3]
           ]
     convert(mtx)
 
