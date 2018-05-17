@@ -12,7 +12,7 @@ LDFLAGS = -lrt -lm -fopenmp -pthread
 all: main
 
 
-main: matmul.o error.o macros.o
+main: matmul.o error.o macros.o seqmatmul.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 %.o: %.c %.h
