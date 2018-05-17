@@ -24,8 +24,10 @@ int main(int argc, char const *argv[]) {
     char *file_C = estrdup(argv[4]);
 
     Matrix mtx_A = new_matrix(file_A);
-    //Matrix mtx_B = new_matrix(file_B);
-    //Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
+    Matrix mtx_B = new_matrix(file_B);
+    Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
     print_matrix(mtx_A);
+    print_matrix(mtx_B);
+    // write_matrix(mtx_C);
 
 }

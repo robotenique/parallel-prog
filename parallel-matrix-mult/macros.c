@@ -13,8 +13,9 @@
 #include "error.h"
 
 void print_matrix(Matrix mtx) {
-    for (size_t i = 0; i < mtx->n; i++) {
-        for (size_t j = 0; j < mtx->m - 1; j++) {
+    printf("\n");
+    for (int i = 0; i < mtx->n; i++) {
+        for (int j = 0; j < mtx->m - 1; j++) {
             printf("%lf ", mtx->matrix[i][j]);
         }
         printf("%lf\n", mtx->matrix[i][mtx->m - 1]);
@@ -62,4 +63,28 @@ Matrix new_matrix(char* filename) {
     if (line)
         free(line);
     return mtx;
+}
+
+Matrix new_matrix_clean(u_int n, u_int m) {
+    Matrix mtx = (Matrix)emalloc(sizeof(mat));
+    mtx->matrix = emalloc(n*sizeof(double*));
+    for (int i = 0; i < n; i++) {
+        mtx->matrix[i] = calloc(m, sizeof(double));
+        if (mtx->matrix[i] == NULL)
+            die("Failed to allocate memory");
+    }
+    mtx->n = n;
+    mtx->m = m;
+    return mtx;
+}
+
+void write_matrix(Matrix mtx, char* filename){
+    FILE *fp = efopen(filename, "w");
+    fprintf(fp, "%u %u\n", mtx->n, mtx->m);
+    for (int i = 0; i < mtx->n; i++)
+        for (int j = 0; j < mtx->m; j++)
+            if(mtx->matrix[i][j] != 0)
+                fprintf(fp, "%d %d %lf\n", i + 1, j + 1, mtx->matrix[i][j]);
+
+    fclose(fp);
 }

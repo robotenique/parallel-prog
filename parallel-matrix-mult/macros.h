@@ -50,13 +50,26 @@ Matrix new_matrix(char* filename);
 /*
  * Function: new_matrix_clean
  * --------------------------------------------------------
- * Creates a new matrix given the filename of the matrix
+ * Creates a new matrix with dim (n x m) filled with zeros
  *
- * @args  filename :  string
+ * @args  n : number of rows
+ *        m : number of cols
  *
  * @return  the new matrix created
  */
-Matrix new_matrix_clean();
+Matrix new_matrix_clean(u_int n, u_int m);
+
+/*
+ * Function: write_matrix
+ * --------------------------------------------------------
+ * Writes out the matrix in the format specified in a file
+ *
+ * @args  mtx :  the Matrix
+ *        filename: the name of the file
+ *
+ * @return
+ */
+void write_matrix(Matrix mtx, char* filename);
 
 /* TODO: REMOVE THIS, DEBUGGER */
 void print_matrix(Matrix mtx);
