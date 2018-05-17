@@ -60,6 +60,17 @@ Matrix new_matrix(char* filename);
 Matrix new_matrix_clean(u_int n, u_int m);
 
 /*
+ * Function: destroy_matrix
+ * --------------------------------------------------------
+ * Free the specified matrix
+ *
+ * @args  mtx :  the Matrix
+ *
+ * @return
+ */
+void destroy_matrix(Matrix mtx);
+
+/*
  * Function: write_matrix
  * --------------------------------------------------------
  * Writes out the matrix in the format specified in a file

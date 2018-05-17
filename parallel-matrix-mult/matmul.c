@@ -71,10 +71,11 @@ int main(int argc, char const *argv[]) {
     //print_matrix(mtx_B);
     matmul_seq(mtx_A, mtx_B, mtx_C);
     print_matrix(mtx_C);
-    matmul_seq(mtx_A, mtx_C, mtx_B);
-    print_matrix(mtx_B);
-    matmul_seq(mtx_A, mtx_B, mtx_C);
-    print_matrix(mtx_C);
+    reset_matrix(mtx_B);    
+    destroy_matrix(mtx_C);
+    // matmul_seq(mtx_A, mtx_C, mtx_B);
+    // print_matrix(mtx_B);
+    // reset_matrix(mtx_C);
 
     // write_matrix(mtx_C);
 

@@ -94,3 +94,10 @@ void reset_matrix(Matrix mtx) {
         for (int j = 0; j < mtx->m; j++)
             mtx->matrix[i][j] = 0.0f;
 }
+
+void destroy_matrix(Matrix mtx) {
+    for (int i = 0; i < mtx->n; i++)
+        free(mtx->matrix[i]);
+    free(mtx->matrix);
+    free(mtx);
+}
