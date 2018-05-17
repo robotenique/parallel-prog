@@ -6,10 +6,6 @@
 
 int IMPL_TYPE;
 
-void matmul_seq(Matrix A, Matrix B, Matrix C) {
-    matmul_seq_rec(mtx_A, 0, 0, mtx_B, 0, 0, mtx_C, mtx_A->n, mtx_A->m, mtx_B->m);
-}
-
 void matmul_seq_rec(Matrix A, int ini_ar, int ini_ac,
                     Matrix B, int ini_br, int ini_bc,
                     Matrix C, int size_ar, int size_ac, int size_bc) {
@@ -22,6 +18,8 @@ void matmul_seq_rec(Matrix A, int ini_ar, int ini_ac,
     int new_size_ar = size_ar/2;
     int new_size_ac = size_ac/2;
     int new_size_bc = size_bc/2;
+    //Matrix T = new_matrix_clean(u_int n, u_int m)
+
     matmul_seq_rec(A, ini_ar, ini_ac, B, ini_br, ini_bc,
         C, new_size_ar, new_size_ac, new_size_bc);
     matmul_seq_rec(A, ini_ar, ini_ac, B, ini_br, ini_bc + new_size_bc,
@@ -45,6 +43,10 @@ void matmul_seq_rec(Matrix A, int ini_ar, int ini_ac,
     // add(C, T);
     // free(T);
     return ;
+}
+
+void matmul_seq(Matrix A, Matrix B, Matrix C) {
+    matmul_seq_rec(A, 0, 0, B, 0, 0, C, A->n, A->m, B->m);
 }
 
 int main(int argc, char const *argv[]) {
