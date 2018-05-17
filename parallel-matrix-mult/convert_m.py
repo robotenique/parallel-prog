@@ -6,10 +6,10 @@ def convert(mtx):
         for j in range(m):
             if mtx[i][j] != 0:
                 print(f"{i + 1} {j + 1} {mtx[i][j]}")
-    
+
 def main():
-    mtx = [[1, 1],
-           [1, 0]
+    mtx = [[-1, 3],
+           [4, 2]
           ]
     convert(mtx)
 

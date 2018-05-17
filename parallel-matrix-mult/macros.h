@@ -71,6 +71,17 @@ Matrix new_matrix_clean(u_int n, u_int m);
  */
 void write_matrix(Matrix mtx, char* filename);
 
+/*
+ * Function: reset_matrix
+ * --------------------------------------------------------
+ * Set all the entries in the matrix to zero
+ *
+ * @args  mtx :  the Matrix
+ *
+ * @return
+ */
+void reset_matrix(Matrix mtx);
+
 /* TODO: REMOVE THIS, DEBUGGER */
 void print_matrix(Matrix mtx);
 #endif

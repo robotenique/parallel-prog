@@ -88,3 +88,9 @@ void write_matrix(Matrix mtx, char* filename){
 
     fclose(fp);
 }
+
+void reset_matrix(Matrix mtx) {
+    for (int i = 0; i < mtx->n; i++)
+        for (int j = 0; j < mtx->m; j++)
+            mtx->matrix[i][j] = 0.0f;
+}

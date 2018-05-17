@@ -65,8 +65,10 @@ int main(int argc, char const *argv[]) {
     //print_matrix(mtx_B);
     matmul_seq(mtx_A, 0, 0, mtx_B, 0, 0, mtx_C, mtx_A->n, mtx_A->m, mtx_B->m);
     print_matrix(mtx_C);
+    reset_matrix(mtx_B);
     matmul_seq(mtx_A, 0, 0, mtx_C, 0, 0, mtx_B, mtx_A->n, mtx_A->m, mtx_C->m);
     print_matrix(mtx_B);
+    reset_matrix(mtx_C);
     matmul_seq(mtx_A, 0, 0, mtx_B, 0, 0, mtx_C, mtx_A->n, mtx_A->m, mtx_B->m);
     print_matrix(mtx_C);
     // write_matrix(mtx_C);
