@@ -61,6 +61,8 @@ int main(int argc, char const *argv[]) {
     Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
     print_matrix(mtx_A);
     print_matrix(mtx_B);
+    matmul_seq(mtx_A, 0, 0, mtx_B, 0, 0, mtx_C, mtx_A->n, mtx_A->m, mtx_B->m);
+    print_matrix(mtx_C);
     // write_matrix(mtx_C);
 
 }
