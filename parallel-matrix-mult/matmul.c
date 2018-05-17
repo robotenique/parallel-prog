@@ -9,6 +9,8 @@ int IMPL_TYPE;
 void matmul_seq(Matrix A, int ini_ar, int ini_ac,
                 Matrix B, int ini_br, int ini_bc,
                 Matrix C, int size_ar, int size_ac, int size_bc) {
+    if (!size_ac || !size_ar || !size_bc)
+        return ;
     if (size_ar == 1 && size_ac == 1 && size_bc == 1) {
         C->matrix[ini_ar][ini_bc] += A->matrix[ini_ar][ini_ac]*B->matrix[ini_br][ini_bc];
         return ;
@@ -59,7 +61,11 @@ int main(int argc, char const *argv[]) {
     Matrix mtx_A = new_matrix(file_A);
     Matrix mtx_B = new_matrix(file_B);
     Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
-    print_matrix(mtx_A);
+    //print_matrix(mtx_A);
+    //print_matrix(mtx_B);
+    matmul_seq(mtx_A, 0, 0, mtx_B, 0, 0, mtx_C, mtx_A->n, mtx_A->m, mtx_B->m);
+    print_matrix(mtx_C);
+    matmul_seq(mtx_A, 0, 0, mtx_C, 0, 0, mtx_B, mtx_A->n, mtx_A->m, mtx_C->m);
     print_matrix(mtx_B);
     matmul_seq(mtx_A, 0, 0, mtx_B, 0, 0, mtx_C, mtx_A->n, mtx_A->m, mtx_B->m);
     print_matrix(mtx_C);
