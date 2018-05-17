@@ -30,11 +30,26 @@ typedef struct mat_t{
     u_int m;
 } mat;
 
+typedef struct mat_c_t{
+    double *m_c;
+    u_int n;
+    u_int m;
+    u_int nm;
+} mat_c;
+
 typedef mat* Matrix;
+
+typedef mat_c* MatrixArray;
 
 
 
 /* Functions */
+MatrixArray new_matrixArray(char* filename);
+MatrixArray new_matrixArray_clean(u_int n, u_int m);
+void destroy_matrixArray(MatrixArray mtxArr);
+void write_matrixArray(MatrixArray mtxArr, char* filename);
+void reset_matrixArray(MatrixArray mtxArr);
+void print_matrixArray(MatrixArray mtxArr);
 
 /*
  * Function: new_matrix

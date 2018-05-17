@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <omp.h>
 #include "error.h"
 #include "macros.h"
 #include "seqmatmul.h"
+#include "openmpmatmul.h"
 
 #define BILLION 1000000000.0
 #define MILLION 1000000.0
@@ -16,7 +18,7 @@ int main(int argc, char const *argv[]) {
     set_prog_name("matmul");
 
     struct timespec start, finish;
-    double elapsed;
+    double elapsed, dtime;
 
     if(argc < 5)
         die("Wrong number of arguments!\nUsage ./main <impl> <file_matrixA> <file_matrixB> <file_matrixC>");
@@ -27,18 +29,48 @@ int main(int argc, char const *argv[]) {
         IMPL_TYPE = 1;
     else
         die("Invalid <implementation> provided.");
+
     char *file_A = estrdup(argv[2]);
     char *file_B = estrdup(argv[3]);
     char *file_C = estrdup(argv[4]);
+    /* -------------- Using openMP -------------- */
+    MatrixArray mtxArr_A = new_matrixArray(file_A);
+    MatrixArray mtxArr_B = new_matrixArray(file_B);
+    MatrixArray mtxArr_C = new_matrixArray_clean(mtxArr_A->n, mtxArr_B->m);
+    printf("MATRIZ A:\n");
+    print_matrixArray(mtxArr_A);
+    printf("MATRIZ B:\n");
+    print_matrixArray(mtxArr_B);
+    printf("--\n");
 
+    dtime = omp_get_wtime();
+    matmul_omp(mtxArr_A, mtxArr_B, mtxArr_C);
+    dtime = omp_get_wtime() - dtime;
+
+    printf("\n --- Parallel matmul ---\n");
+    print_matrixArray(mtxArr_C);
+    printf("Elapsed: %f\n", dtime);
+
+
+    // exit(1);
+
+    printf("\n --- Sequential matmul ---\n");
     Matrix mtx_A = new_matrix(file_A);
     Matrix mtx_B = new_matrix(file_B);
-    Matrix mtx_C;
+    Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
+
+    dtime = omp_get_wtime();
+    matmul_seq(mtx_A, mtx_B, mtx_C);
+    dtime = omp_get_wtime() - dtime;
+
+    print_matrix(mtx_C);
+    printf("Elapsed: %f\n", dtime);
+    exit(1);
 
     printf("time\n");
 
     for (int min_size = 64; min_size <= 2048; min_size += 64) {
-        mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
+        Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
         // print_matrix(mtx_A);
         // print_matrix(mtx_B);
 

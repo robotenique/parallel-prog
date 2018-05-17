@@ -3,7 +3,7 @@
 # @author: João Gabriel Basi Nº USP: 9793801
 #
 CC=gcc
-CFLAGS = -Wall -pedantic -O2 -std=gnu11
+CFLAGS = -Wall -pedantic -O3 -std=gnu11
 LDFLAGS = -lrt -lm -fopenmp -pthread
 
 .PHONY: clean
@@ -12,7 +12,7 @@ LDFLAGS = -lrt -lm -fopenmp -pthread
 all: main
 
 
-main: matmul.o error.o macros.o seqmatmul.o
+main: matmul.o error.o macros.o seqmatmul.o openmpmatmul.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 %.o: %.c %.h

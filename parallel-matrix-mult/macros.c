@@ -22,6 +22,8 @@ void print_matrix(Matrix mtx) {
     }
 }
 
+
+
 Matrix new_matrix(char* filename) {
     FILE * fp;
     char * line = NULL;
@@ -100,4 +102,82 @@ void destroy_matrix(Matrix mtx) {
         free(mtx->matrix[i]);
     free(mtx->matrix);
     free(mtx);
+}
+
+MatrixArray new_matrixArray(char* filename){
+    FILE * fp;
+    char * line = NULL;
+    size_t len = 0;
+    char * pch;
+    size_t read;
+
+    int curr_i, curr_j;
+    MatrixArray mtx = (MatrixArray)emalloc(sizeof(mat_c));
+    fp = efopen(filename, "r");
+    u_int lnum = 0;
+    while ((read = getline(&line, &len, fp)) != -1) {
+        if(lnum == 0){
+            pch = strtok (line," ");
+            mtx->n = (u_int)atoi(pch);
+            pch = strtok (NULL, " ");
+            mtx->m = (u_int)atoi(pch);
+            mtx->nm = mtx->n*mtx->m;
+            mtx->m_c = calloc(mtx->nm, sizeof(double));
+            if (mtx->m_c == NULL)
+                die("Failed to allocate memory");
+
+        }
+        else{
+            pch = strtok (line," ");
+            // printf("PCH %s  ", pch);
+            curr_i = (u_int)atoi(pch);
+            pch = strtok (NULL, " ");
+            // printf("PCH %s  ", pch);
+            curr_j = (u_int)atoi(pch);
+            pch = strtok (NULL, " ");
+            // printf("PCH %s  ", pch);
+            mtx->m_c[(curr_i - 1)*mtx->m + (curr_j - 1)] = atof(pch);
+            // printf("TERMINEI!\n");
+        }
+        lnum++;
+    }
+
+    fclose(fp);
+    if (line)
+        free(line);
+    return mtx;
+}
+MatrixArray new_matrixArray_clean(u_int n, u_int m){
+    MatrixArray mtx = (MatrixArray)emalloc(sizeof(mat_c));
+    mtx->n = n;
+    mtx->m = m;
+    mtx->nm = n*m;
+    mtx->m_c = calloc(mtx->nm, sizeof(double));
+    return mtx;
+}
+void destroy_matrixArray(MatrixArray mtxArr){
+    free(mtxArr->m_c);
+    free(mtxArr);
+}
+void write_matrixArray(MatrixArray mtxArr, char* filename){
+    FILE *fp = efopen(filename, "w");
+    fprintf(fp, "%u %u\n", mtxArr->n, mtxArr->m);
+    for (int i = 0; i < mtxArr->n; i++)
+        for (int j = 0; j < mtxArr->m; j++)
+            if(mtxArr->m_c[i*mtxArr->m + j] != 0)
+                fprintf(fp, "%d %d %lf\n", i + 1, j + 1, mtxArr->m_c[i*mtxArr->n + j]);
+
+    fclose(fp);
+}
+void reset_matrixArray(MatrixArray mtxArr){
+    memset(mtxArr->m_c, 0.0f, mtxArr->nm*sizeof(double));
+}
+void print_matrixArray(MatrixArray mtxArr) {
+    printf("\n");
+    for (int i = 0; i < mtxArr->n; i++) {
+        for (int j = 0; j < mtxArr->m - 1; j++) {
+            printf("%lf ", mtxArr->m_c[i*mtxArr->m + j]);
+        }
+        printf("%lf\n", mtxArr->m_c[i*mtxArr->m + (mtxArr->m - 1)]);
+    }
 }

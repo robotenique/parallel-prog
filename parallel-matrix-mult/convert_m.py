@@ -1,3 +1,4 @@
+import numpy as np
 def convert(mtx):
     n = len(mtx)
     m = len(mtx[0])
@@ -12,7 +13,10 @@ def main():
            [1, 2, 3],
            [1, 2, 3]
           ]
-    convert(mtx)
+    a = np.random.random((500,100))*10
+    b = np.random.random((100,500))*10
+    convert(a)
+
 
 if __name__ == '__main__':
     main()
