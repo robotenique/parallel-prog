@@ -84,8 +84,8 @@ void matmul_seq_rec(Matrix A, int ini_ar, int ini_ac,
                    size_ar - new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc);
 
     // With the temporary matrix T, C and T are added up recursively here
-    add(C, ini_cr, ini_cc, T, 0, 0);
-    // free(T);
+    add(C, ini_cr, ini_cc, T, 0, 0, T->n, T->m);
+    destroy_matrix(T);
     return ;
 }
 
@@ -114,9 +114,9 @@ int main(int argc, char const *argv[]) {
     //print_matrix(mtx_A);
     //print_matrix(mtx_B);
     matmul_seq(mtx_A, mtx_B, mtx_C);
+    print_matrix(mtx_A);
+    print_matrix(mtx_B);
     print_matrix(mtx_C);
-    reset_matrix(mtx_B);    
-    destroy_matrix(mtx_C);
     // matmul_seq(mtx_A, mtx_C, mtx_B);
     // print_matrix(mtx_B);
     // reset_matrix(mtx_C);
