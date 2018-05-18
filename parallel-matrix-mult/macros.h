@@ -37,9 +37,17 @@ typedef struct mat_c_t{
     u_int nm;
 } mat_c;
 
+typedef struct targ_t {
+    double **A, **B, **C;
+    u_int ini_ar, ini_ac, ini_br, ini_bc, ini_cr, ini_cc;
+    u_int size_ar, size_ac, size_bc, min_size;
+} targ;
+
 typedef mat* Matrix;
 
 typedef mat_c* MatrixArray;
+
+typedef targ* Argument;
 
 
 
@@ -107,6 +115,11 @@ void write_matrix(Matrix mtx, char* filename);
  * @return
  */
 void reset_matrix(Matrix mtx);
+
+Argument create_argument(double** A, u_int ini_ar, u_int ini_ac,
+                         double** B, u_int ini_br, u_int ini_bc,
+                         double** C, u_int ini_cr, u_int ini_cc,
+                         u_int size_ar, u_int size_ac, u_int size_bc, u_int min_size);
 
 /* TODO: REMOVE THIS, DEBUGGER */
 void print_matrix(Matrix mtx);

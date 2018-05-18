@@ -7,10 +7,7 @@
 #include "macros.h"
 #include "seqmatmul.h"
 #include "openmpmatmul.h"
-
-#define BILLION 1000000000.0
-#define MILLION 1000000.0
-#define HUNDRED 1000.0
+#include "ptmatmul.h"
 
 int IMPL_TYPE;
 
@@ -47,20 +44,36 @@ int main(int argc, char const *argv[]) {
     //matcoisa(mtxArr_A, mtxArr_B, mtxArr_C);
     dtime = omp_get_wtime() - dtime;
 
-    printf("\n --- Parallel matmul ---\n");
+    printf("\n --- Parallel matmul (omp) ---\n");
     //print_matrixArray(mtxArr_C);
     printf("Elapsed: %f\n", dtime);
 
-    // destroy_matrixArray(mtxArr_A);
-    // destroy_matrixArray(mtxArr_B);
-    // destroy_matrixArray(mtxArr_C);
+    // exit(1);
+
+    Matrix mtx_A = new_matrix(file_A);
+    Matrix mtx_B = new_matrix(file_B);
+
+    // printf("\n --- Parallel matmul (pt) ---\n"); 
+    // Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
+    //
+    // dtime = omp_get_wtime();
+    // matmul_pt(mtx_A, mtx_B, mtx_C, MIN_SIZE);
+    // dtime = omp_get_wtime() - dtime;
+    //
+    // //print_matrix(mtx_C);
+    // printf("Elapsed: %f\n", dtime);
+    //
+    // if(are_equal_ma2m(mtxArr_C, mtx_C))
+    //     printf("WAU!!!\n");
+    // else
+    //     printf("LIXOOOOOOOOOOO\n");
+    //
+    // destroy_matrix(mtx_C);
 
     // exit(1);
 
     printf("\n --- Seq matmul ---\n");
-    Matrix mtx_A = new_matrix(file_A);
-    Matrix mtx_B = new_matrix(file_B);
-    Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
+    mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
 
     dtime = omp_get_wtime();
     matmul_seq(mtx_A, mtx_B, mtx_C, MIN_SIZE);
@@ -70,47 +83,22 @@ int main(int argc, char const *argv[]) {
     //print_matrix(mtx_C);
     printf("Elapsed: %f\n", dtime);
 
-    // printf("\n --- Sequential matmul (normal) ---\n");
-    // reset_matrix(mtx_C);
-    // dtime = omp_get_wtime();
-    // matmul_seq(mtx_A, mtx_B, mtx_C);
-    // dtime = omp_get_wtime() - dtime;
-    // //print_matrix(mtx_C);
-    // printf("Elapsed: %f\n", dtime);
-
     if(are_equal_ma2m(mtxArr_C, mtx_C))
         printf("WAU!!!\n");
     else
         printf("LIXOOOOOOOOOOO\n");
 
+    //exit(1);
 
-    exit(1);
+    destroy_matrixArray(mtxArr_A);
+    destroy_matrixArray(mtxArr_B);
+    destroy_matrixArray(mtxArr_C);
 
     destroy_matrix(mtx_A);
     destroy_matrix(mtx_B);
     destroy_matrix(mtx_C);
 
     //exit(1);
-
-    //printf("time\n");
-
-    // for (int min_size = 64; min_size <= 2048; min_size += 64) {
-    //     Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
-    //     // print_matrix(mtx_A);
-    //     // print_matrix(mtx_B);
-    //
-    //     clock_gettime(CLOCK_MONOTONIC, &start);
-    //
-    //     matmul_seq_opt(mtx_A, mtx_B, mtx_C, min_size);
-    //
-    //     clock_gettime(CLOCK_MONOTONIC, &finish);
-    //
-    //     elapsed = (finish.tv_sec - start.tv_sec) * HUNDRED;
-    //     elapsed += (finish.tv_nsec - start.tv_nsec) / MILLION;
-    //     printf("%f\n", elapsed);
-    //
-    //     //print_matrix(mtx_C);
-    // }
 
     //write_matrix(mtx_C, file_C);
     return 0;

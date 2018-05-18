@@ -2,32 +2,6 @@
 #include <stdlib.h>
 #include "macros.h"
 
-void add(double** C, int ini_cr, int ini_cc,
-         double** T, int ini_tr, int ini_tc,
-         int size_r, int size_c) {
-    if (!size_r || !size_c)
-        return ;
-    if (size_r == 1 && size_c == 1) {
-        C[ini_cr][ini_cc] += T[ini_tr][ini_tc];
-        return ;
-    }
-    int new_size_r = size_r/2;
-    int new_size_c = size_c/2;
-    add(C, ini_cr, ini_cc,
-        T, ini_tr, ini_tc,
-        new_size_r, new_size_c);
-    add(C, ini_cr + new_size_r, ini_cc,
-        T, ini_tr + new_size_r, ini_tc,
-        size_r - new_size_r, new_size_c);
-    add(C, ini_cr, ini_cc + new_size_c,
-        T, ini_tr, ini_tc + new_size_c,
-        new_size_r, size_c - new_size_c);
-    add(C, ini_cr + new_size_r, ini_cc + new_size_c,
-        T, ini_tr + new_size_r, ini_tc + new_size_c,
-        size_r - new_size_r, size_c - new_size_c);
-    return;
-}
-
 void matmul_seq_rec(double** A, int ini_ar, int ini_ac,
                     double** B, int ini_br, int ini_bc,
                     double** C, int ini_cr, int ini_cc,
