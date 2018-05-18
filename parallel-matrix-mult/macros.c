@@ -181,3 +181,12 @@ void print_matrixArray(MatrixArray mtxArr) {
         printf("%lf\n", mtxArr->m_c[i*mtxArr->m + (mtxArr->m - 1)]);
     }
 }
+
+bool are_equal_ma2m(MatrixArray ma, Matrix m){
+    for (int i = 0; i < ma->n; i++)
+        for (int j = 0; j < ma->m; j++)
+            if(ma->m_c[i*ma->m + j] != m->matrix[i][j])
+                return false;
+
+    return true;
+}

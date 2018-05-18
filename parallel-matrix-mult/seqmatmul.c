@@ -165,3 +165,39 @@ void matmul_seq_opt_rec(double** A, int ini_ar, int ini_ac,
 void matmul_seq_opt(Matrix A, Matrix B, Matrix C, int min_size) {
     matmul_seq_opt_rec(A->matrix, 0, 0, B->matrix, 0, 0, C->matrix, 0, 0, A->n, A->m, B->m, min_size);
 }
+
+
+void matmul_trashy(Matrix A, Matrix B, Matrix C){
+    double **a = A->matrix;
+    double **b = B->matrix;
+    double **c = C->matrix;
+    for (size_t i = 0; i < A->n; i++)
+        for (size_t j = 0; j < B->m; j++)
+            for (size_t k = 0; k < A->m; k++)
+                c[i][j] += a[i][k]*b[k][j];
+}
+void matcoisa(MatrixArray A, MatrixArray B, MatrixArray C){
+    u_int a_n = A->n;
+    u_int a_m = A->m;
+    u_int b_n = B->n;
+    u_int b_m = B->m;
+    u_int c_n = C->n;
+    u_int c_m = C->m;
+    double* a = A->m_c;
+    double* b = B->m_c;
+    double* c = C->m_c;
+
+    int i, j, k;
+    for (i = 0; i < a_n; i++) {
+         //printf("Thread #%d is doing row %d.\n",th_id,i);
+         for (k = 0; k < b_n; k++) {
+            double r = *a++;
+            double *pB = b + k*b_m;
+            double *pC = c + i*b_m;
+            for (j = 0; j < b_m; j++) {
+                *pC++ += r* *pB++;
+                //c[i*c_m + j] += r*b[k*b_m + j];
+            }
+         }
+    }
+}
