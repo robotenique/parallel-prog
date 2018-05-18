@@ -110,4 +110,7 @@ void reset_matrix(Matrix mtx);
 
 /* TODO: REMOVE THIS, DEBUGGER */
 void print_matrix(Matrix mtx);
+
+bool are_equal_ma2m(MatrixArray ma, Matrix m);
+
 #endif

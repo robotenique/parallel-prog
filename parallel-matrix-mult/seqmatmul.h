@@ -16,4 +16,8 @@
 void matmul_seq(Matrix A, Matrix B, Matrix C, int min_size);
 void matmul_seq2(Matrix A, Matrix B, Matrix C, int min_size);
 
+//TODO: REMOVE THIS
+void matmul_trashy(Matrix A, Matrix B, Matrix C);
+void matcoisa(MatrixArray A, MatrixArray B, MatrixArray C);
+
 #endif
