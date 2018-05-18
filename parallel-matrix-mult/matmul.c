@@ -17,8 +17,7 @@ int IMPL_TYPE;
 int main(int argc, char const *argv[]) {
     set_prog_name("matmul");
 
-    struct timespec start, finish;
-    double elapsed, dtime;
+    double dtime;
 
     if(argc < 5)
         die("Wrong number of arguments!\nUsage ./main <impl> <file_matrixA> <file_matrixB> <file_matrixC>");
@@ -51,6 +50,9 @@ int main(int argc, char const *argv[]) {
     print_matrixArray(mtxArr_C);
     printf("Elapsed: %f\n", dtime);
 
+    destroy_matrixArray(mtxArr_A);
+    destroy_matrixArray(mtxArr_B);
+    destroy_matrixArray(mtxArr_C);
 
     // exit(1);
 
@@ -60,32 +62,38 @@ int main(int argc, char const *argv[]) {
     Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
 
     dtime = omp_get_wtime();
-    matmul_seq(mtx_A, mtx_B, mtx_C);
+    matmul_seq(mtx_A, mtx_B, mtx_C, MIN_SIZE);
     dtime = omp_get_wtime() - dtime;
 
     print_matrix(mtx_C);
     printf("Elapsed: %f\n", dtime);
-    exit(1);
 
-    printf("time\n");
+    destroy_matrix(mtx_A);
+    destroy_matrix(mtx_B);
+    destroy_matrix(mtx_C);
 
-    for (int min_size = 64; min_size <= 2048; min_size += 64) {
-        Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
-        // print_matrix(mtx_A);
-        // print_matrix(mtx_B);
+    //exit(1);
 
-        clock_gettime(CLOCK_MONOTONIC, &start);
+    //printf("time\n");
 
-        matmul_seq_opt(mtx_A, mtx_B, mtx_C, min_size);
-
-        clock_gettime(CLOCK_MONOTONIC, &finish);
-
-        elapsed = (finish.tv_sec - start.tv_sec) * HUNDRED;
-        elapsed += (finish.tv_nsec - start.tv_nsec) / MILLION;
-        printf("%f\n", elapsed);
-
-        //print_matrix(mtx_C);
-    }
+    // for (int min_size = 64; min_size <= 2048; min_size += 64) {
+    //     Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
+    //     // print_matrix(mtx_A);
+    //     // print_matrix(mtx_B);
+    //
+    //     clock_gettime(CLOCK_MONOTONIC, &start);
+    //
+    //     matmul_seq_opt(mtx_A, mtx_B, mtx_C, min_size);
+    //
+    //     clock_gettime(CLOCK_MONOTONIC, &finish);
+    //
+    //     elapsed = (finish.tv_sec - start.tv_sec) * HUNDRED;
+    //     elapsed += (finish.tv_nsec - start.tv_nsec) / MILLION;
+    //     printf("%f\n", elapsed);
+    //
+    //     //print_matrix(mtx_C);
+    // }
 
     //write_matrix(mtx_C, file_C);
+    return 0;
 }
