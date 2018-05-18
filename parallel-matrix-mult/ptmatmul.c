@@ -5,6 +5,8 @@
 #include <inttypes.h>
 #include "ptmatmul.h"
 
+int num_threads = 0;
+
 void add(double** C, uint64_t ini_cr, uint64_t ini_cc,
          double** T, uint64_t ini_tr, uint64_t ini_tc,
          uint64_t size_r, uint64_t size_c) {
@@ -37,6 +39,8 @@ void* matmul_pt_rec(void* arg) {
         free(a);
         return NULL;
     }
+    //num_threads++;
+    //printf("%d\n", num_threads);
     double** A = a->A;
     double** B = a->B;
     double** C = a->C;
@@ -50,7 +54,6 @@ void* matmul_pt_rec(void* arg) {
     uint64_t ini_cr = a->ini_cr;
     uint64_t ini_cc = a->ini_cc;
     uint64_t min_size = a->min_size;
-    //printf("%lu, %lu, %lu, %lu, %lu\n", size_ac, size_ar, size_bc, ini_ac, ini_bc);
     if (size_ar <= min_size && size_ac <= min_size && size_bc <= min_size) {
         for (uint64_t i = 0; i < size_ar; i++) {
             for (uint64_t k = 0; k < size_ac; k++) {
@@ -66,8 +69,6 @@ void* matmul_pt_rec(void* arg) {
     uint64_t new_size_bc = size_bc/2;
     pthread_t t1, t2, t3, t4, t5, t6, t7, t8;
     Argument a_tmp;
-
-    Matrix T = new_matrix_clean(size_ar, size_bc);
 
     a_tmp = create_argument(A, ini_ar, ini_ac,
                   B, ini_br, ini_bc,
@@ -90,38 +91,37 @@ void* matmul_pt_rec(void* arg) {
                   size_ar - new_size_ar, new_size_ac, size_bc - new_size_bc, min_size);
     pthread_create(&t4, NULL, &matmul_pt_rec, (void*)a_tmp);
 
-    a_tmp = create_argument(A, ini_ar, ini_ac + new_size_ac,
-                  B, ini_br + new_size_ac, ini_bc,
-                  T->matrix, 0, 0,
-                  new_size_ar, size_ac - new_size_ac, new_size_bc, min_size);
-    pthread_create(&t5, NULL, &matmul_pt_rec, (void*)a_tmp);
-    a_tmp = create_argument(A, ini_ar, ini_ac + new_size_ac,
-                  B, ini_br + new_size_ac, ini_bc + new_size_bc,
-                  T->matrix, 0, new_size_bc,
-                  new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc, min_size);
-    pthread_create(&t6, NULL, &matmul_pt_rec, (void*)a_tmp);
-    a_tmp = create_argument(A, ini_ar + new_size_ar, ini_ac + new_size_ac,
-                  B, ini_br + new_size_ac, ini_bc,
-                  T->matrix, new_size_ar, 0,
-                  size_ar - new_size_ar, size_ac - new_size_ac, new_size_bc, min_size);
-    pthread_create(&t7, NULL, &matmul_pt_rec, (void*)a_tmp);
-    a_tmp = create_argument(A, ini_ar + new_size_ar, ini_ac + new_size_ac,
-                  B, ini_br + new_size_ac, ini_bc + new_size_bc,
-                  T->matrix, new_size_ar, new_size_bc,
-                  size_ar - new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc, min_size);
-    pthread_create(&t8, NULL, &matmul_pt_rec, (void*)a_tmp);
-
     pthread_join(t1, NULL);
     pthread_join(t2, NULL);
     pthread_join(t3, NULL);
     pthread_join(t4, NULL);
+
+    a_tmp = create_argument(A, ini_ar, ini_ac + new_size_ac,
+                  B, ini_br + new_size_ac, ini_bc,
+                  C, ini_cr, ini_cc,
+                  new_size_ar, size_ac - new_size_ac, new_size_bc, min_size);
+    pthread_create(&t5, NULL, &matmul_pt_rec, (void*)a_tmp);
+    a_tmp = create_argument(A, ini_ar, ini_ac + new_size_ac,
+                  B, ini_br + new_size_ac, ini_bc + new_size_bc,
+                  C, ini_cr, ini_cc + new_size_bc,
+                  new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc, min_size);
+    pthread_create(&t6, NULL, &matmul_pt_rec, (void*)a_tmp);
+    a_tmp = create_argument(A, ini_ar + new_size_ar, ini_ac + new_size_ac,
+                  B, ini_br + new_size_ac, ini_bc,
+                  C, ini_cr + new_size_ar, ini_cc,
+                  size_ar - new_size_ar, size_ac - new_size_ac, new_size_bc, min_size);
+    pthread_create(&t7, NULL, &matmul_pt_rec, (void*)a_tmp);
+    a_tmp = create_argument(A, ini_ar + new_size_ar, ini_ac + new_size_ac,
+                  B, ini_br + new_size_ac, ini_bc + new_size_bc,
+                  C, ini_cr + new_size_ar, ini_cc + new_size_bc,
+                  size_ar - new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc, min_size);
+    pthread_create(&t8, NULL, &matmul_pt_rec, (void*)a_tmp);
+
     pthread_join(t5, NULL);
     pthread_join(t6, NULL);
     pthread_join(t7, NULL);
     pthread_join(t8, NULL);
 
-    add(C, ini_cr, ini_cc, T->matrix, 0, 0, size_ar, size_bc);
-    destroy_matrix(T);
     free(a);
     return NULL;
 }
