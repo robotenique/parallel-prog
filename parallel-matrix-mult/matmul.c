@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <omp.h>
+#include <inttypes.h>
 #include "error.h"
 #include "macros.h"
 #include "seqmatmul.h"

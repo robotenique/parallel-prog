@@ -14,12 +14,12 @@ def main():
     mtx = []
     for _ in range(500):
         mtx.append(list(range(1,501)))
-    # a = np.floor(np.random.random((2048,2048))*10)
-    # b = np.floor(np.random.random((2048,2048))*10)
-    mat_a = open("matrix_a_simple.mat", "w")
-    mat_b = open("matrix_b_simple.mat", "w")
-    mat_a.write(convert(np.eye(5)))
-    mat_b.write(convert(np.random.random((5, 5))))
+    a = np.floor(np.random.random((2048,2048))*10)
+    b = np.floor(np.random.random((2048,2048))*10)
+    mat_a = open("matriz_a.mat", "w")
+    mat_b = open("matriz_b.mat", "w")
+    mat_a.write(convert(a))
+    mat_b.write(convert(b))
 
 
 

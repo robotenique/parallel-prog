@@ -5,9 +5,10 @@
 #include <sys/resource.h>
 #include <omp.h>
 #include <stdio.h>
+#include <inttypes.h>
 #include <stdlib.h>
 // for (i = 0; i < a_n; i++) {
-//      //printf("Thread #%d is doing row %d.\n",th_id,i);
+//      //printf("Thread #%lu is doing row %lu.\n",th_id,i);
 //     for (j = 0; j < b_m; j++) {
 //         double dot = 0;
 //         for (k = 0; k < a_m; k++)
@@ -15,15 +16,14 @@
 //         c[i*c_m + j] = dot;
 //     }
 // }
-
-void mmb_omp(double** A, int ini_ar, int ini_ac,
-                    double** B, int ini_br, int ini_bc,
-                    double** C, int ini_cr, int ini_cc,
-                    int size_ar, int size_ac, int size_bc, int min_size) {
+void mmb_omp(double** A, uint64_t ini_ar, uint64_t ini_ac,
+                    double** B, uint64_t ini_br, uint64_t ini_bc,
+                    double** C, uint64_t ini_cr, uint64_t ini_cc,
+                    uint64_t size_ar, uint64_t size_ac, uint64_t size_bc, uint64_t min_size) {
     if (!size_ac || !size_ar || !size_bc)
         return ;
     if (size_ar <= min_size && size_ac <= min_size && size_bc <= min_size) {
-        int i, k, j;
+        uint64_t i, k, j;
         #pragma omp for private(i, j, k) schedule(static)
         for (i = 0; i < size_ar; i++) {
             for (k = 0; k < size_ac; k++) {
@@ -33,9 +33,9 @@ void mmb_omp(double** A, int ini_ar, int ini_ac,
         }
         return ;
     }
-    int new_size_ar = size_ar/2;
-    int new_size_ac = size_ac/2;
-    int new_size_bc = size_bc/2;
+    uint64_t new_size_ar = size_ar/2;
+    uint64_t new_size_ac = size_ac/2;
+    uint64_t new_size_bc = size_bc/2;
     #pragma omp task untied
     mmb_omp(A, ini_ar, ini_ac,
                    B, ini_br, ini_bc,
@@ -91,11 +91,11 @@ void matmul_omp_2(Matrix A, Matrix B, Matrix C) {
 
 
 void matmul_omp(MatrixArray A, MatrixArray B, MatrixArray C){
-    u_int a_n = A->n;
-    u_int a_m = A->m;
-    u_int b_n = B->n;
-    u_int b_m = B->m;
-    u_int c_m = C->m;
+    uint64_t a_n = A->n;
+    uint64_t a_m = A->m;
+    uint64_t b_n = B->n;
+    uint64_t b_m = B->m;
+    uint64_t c_m = C->m;
     double* a = A->m_c;
     double* b = B->m_c;
     double* c = C->m_c;
@@ -104,11 +104,11 @@ void matmul_omp(MatrixArray A, MatrixArray B, MatrixArray C){
 
     #pragma omp parallel
     {
-        int i, j, k;
+        uint64_t i, j, k;
         th_id = omp_get_thread_num();
         #pragma omp for schedule(static)
         // for (i = 0; i < a_n; i++) {
-        //      //printf("Thread #%d is doing row %d.\n",th_id,i);
+        //      //printf("Thread #%lu is doing row %lu.\n",th_id,i);
         //     for (j = 0; j < b_m; j++) {
         //         double dot = 0;
         //         for (k = 0; k < a_m; k++)
@@ -117,7 +117,7 @@ void matmul_omp(MatrixArray A, MatrixArray B, MatrixArray C){
         //     }
         // }
         for (i = 0; i < a_n; i++) {
-             //printf("Thread #%d is doing row %d.\n",th_id,i);
+             //printf("Thread #%lu is doing row %lu.\n",th_id,i);
              for (k = 0; k < b_n; k++) {
                 double r = a[i*a_m + k];
                 for (j = 0; j < b_m; j++) {

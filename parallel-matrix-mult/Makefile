@@ -4,7 +4,7 @@
 #
 CC=gcc
 CFLAGS = -Wall -pedantic -O4 -std=gnu11
-LDFLAGS = -lrt -lm -fopenmp -pthread -mavx -funroll-loops 
+LDFLAGS = -lrt -lm -fopenmp -pthread -mavx -funroll-loops
 
 .PHONY: clean
 

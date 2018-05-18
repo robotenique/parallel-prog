@@ -9,13 +9,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 #include "macros.h"
 #include "error.h"
 
 void print_matrix(Matrix mtx) {
     printf("\n");
-    for (int i = 0; i < mtx->n; i++) {
-        for (int j = 0; j < mtx->m - 1; j++) {
+    for (uint64_t i = 0; i < mtx->n; i++) {
+        for (uint64_t j = 0; j < mtx->m - 1; j++) {
             printf("%lf ", mtx->matrix[i][j]);
         }
         printf("%lf\n", mtx->matrix[i][mtx->m - 1]);
@@ -31,20 +32,20 @@ Matrix new_matrix(char* filename) {
     char * pch;
     size_t read;
 
-    int curr_i, curr_j;
+    uint64_t curr_i, curr_j;
 
     Matrix mtx = (Matrix)emalloc(sizeof(mat));
 
     fp = efopen(filename, "r");
-    u_int lnum = 0;
+    uint64_t lnum = 0;
     while ((read = getline(&line, &len, fp)) != -1) {
         if(lnum == 0){
             pch = strtok (line," ");
-            mtx->n = (u_int)atoi(pch);
+            mtx->n = (uint64_t)atoi(pch);
             pch = strtok (NULL, " ");
-            mtx->m = (u_int)atoi(pch);
+            mtx->m = (uint64_t)atoi(pch);
             mtx->matrix = emalloc(mtx->n*sizeof(double*));
-            for (int i = 0; i < mtx->n; i++) {
+            for (uint64_t i = 0; i < mtx->n; i++) {
                 mtx->matrix[i] = calloc(mtx->m, sizeof(double));
                 if (mtx->matrix[i] == NULL)
                     die("Failed to allocate memory");
@@ -52,9 +53,9 @@ Matrix new_matrix(char* filename) {
         }
         else{
             pch = strtok (line," ");
-            curr_i = (u_int)atoi(pch);
+            curr_i = (uint64_t)atoi(pch);
             pch = strtok (NULL, " ");
-            curr_j = (u_int)atoi(pch);
+            curr_j = (uint64_t)atoi(pch);
             pch = strtok (NULL, " ");
             mtx->matrix[curr_i - 1][curr_j - 1] = atof(pch);
         }
@@ -67,10 +68,10 @@ Matrix new_matrix(char* filename) {
     return mtx;
 }
 
-Matrix new_matrix_clean(u_int n, u_int m) {
+Matrix new_matrix_clean(uint64_t n, uint64_t m) {
     Matrix mtx = (Matrix)emalloc(sizeof(mat));
     mtx->matrix = emalloc(n*sizeof(double*));
-    for (int i = 0; i < n; i++) {
+    for (uint64_t i = 0; i < n; i++) {
         mtx->matrix[i] = calloc(m, sizeof(double));
         if (mtx->matrix[i] == NULL)
             die("Failed to allocate memory");
@@ -82,23 +83,23 @@ Matrix new_matrix_clean(u_int n, u_int m) {
 
 void write_matrix(Matrix mtx, char* filename){
     FILE *fp = efopen(filename, "w");
-    fprintf(fp, "%u %u\n", mtx->n, mtx->m);
-    for (int i = 0; i < mtx->n; i++)
-        for (int j = 0; j < mtx->m; j++)
+    fprintf(fp, "%lu %lu\n", mtx->n, mtx->m);
+    for (uint64_t i = 0; i < mtx->n; i++)
+        for (uint64_t j = 0; j < mtx->m; j++)
             if(mtx->matrix[i][j] != 0)
-                fprintf(fp, "%d %d %lf\n", i + 1, j + 1, mtx->matrix[i][j]);
+                fprintf(fp, "%lu %lu %lf\n", i + 1, j + 1, mtx->matrix[i][j]);
 
     fclose(fp);
 }
 
 void reset_matrix(Matrix mtx) {
-    for (int i = 0; i < mtx->n; i++)
-        for (int j = 0; j < mtx->m; j++)
+    for (uint64_t i = 0; i < mtx->n; i++)
+        for (uint64_t j = 0; j < mtx->m; j++)
             mtx->matrix[i][j] = 0.0f;
 }
 
 void destroy_matrix(Matrix mtx) {
-    for (int i = 0; i < mtx->n; i++)
+    for (uint64_t i = 0; i < mtx->n; i++)
         free(mtx->matrix[i]);
     free(mtx->matrix);
     free(mtx);
@@ -111,16 +112,16 @@ MatrixArray new_matrixArray(char* filename){
     char * pch;
     size_t read;
 
-    int curr_i, curr_j;
+    uint64_t curr_i, curr_j;
     MatrixArray mtx = (MatrixArray)emalloc(sizeof(mat_c));
     fp = efopen(filename, "r");
-    u_int lnum = 0;
+    uint64_t lnum = 0;
     while ((read = getline(&line, &len, fp)) != -1) {
         if(lnum == 0){
             pch = strtok (line," ");
-            mtx->n = (u_int)atoi(pch);
+            mtx->n = (uint64_t)atoi(pch);
             pch = strtok (NULL, " ");
-            mtx->m = (u_int)atoi(pch);
+            mtx->m = (uint64_t)atoi(pch);
             mtx->nm = mtx->n*mtx->m;
             mtx->m_c = calloc(mtx->nm, sizeof(double));
             if (mtx->m_c == NULL)
@@ -130,10 +131,10 @@ MatrixArray new_matrixArray(char* filename){
         else{
             pch = strtok (line," ");
             // printf("PCH %s  ", pch);
-            curr_i = (u_int)atoi(pch);
+            curr_i = (uint64_t)atoi(pch);
             pch = strtok (NULL, " ");
             // printf("PCH %s  ", pch);
-            curr_j = (u_int)atoi(pch);
+            curr_j = (uint64_t)atoi(pch);
             pch = strtok (NULL, " ");
             // printf("PCH %s  ", pch);
             mtx->m_c[(curr_i - 1)*mtx->m + (curr_j - 1)] = atof(pch);
@@ -147,7 +148,7 @@ MatrixArray new_matrixArray(char* filename){
         free(line);
     return mtx;
 }
-MatrixArray new_matrixArray_clean(u_int n, u_int m){
+MatrixArray new_matrixArray_clean(uint64_t n, uint64_t m){
     MatrixArray mtx = (MatrixArray)emalloc(sizeof(mat_c));
     mtx->n = n;
     mtx->m = m;
@@ -161,11 +162,11 @@ void destroy_matrixArray(MatrixArray mtxArr){
 }
 void write_matrixArray(MatrixArray mtxArr, char* filename){
     FILE *fp = efopen(filename, "w");
-    fprintf(fp, "%u %u\n", mtxArr->n, mtxArr->m);
-    for (int i = 0; i < mtxArr->n; i++)
-        for (int j = 0; j < mtxArr->m; j++)
+    fprintf(fp, "%lu %lu\n", mtxArr->n, mtxArr->m);
+    for (uint64_t i = 0; i < mtxArr->n; i++)
+        for (uint64_t j = 0; j < mtxArr->m; j++)
             if(mtxArr->m_c[i*mtxArr->m + j] != 0)
-                fprintf(fp, "%d %d %lf\n", i + 1, j + 1, mtxArr->m_c[i*mtxArr->n + j]);
+                fprintf(fp, "%lu %lu %lf\n", i + 1, j + 1, mtxArr->m_c[i*mtxArr->n + j]);
 
     fclose(fp);
 }
@@ -174,8 +175,8 @@ void reset_matrixArray(MatrixArray mtxArr){
 }
 void print_matrixArray(MatrixArray mtxArr) {
     printf("\n");
-    for (int i = 0; i < mtxArr->n; i++) {
-        for (int j = 0; j < mtxArr->m - 1; j++) {
+    for (uint64_t i = 0; i < mtxArr->n; i++) {
+        for (uint64_t j = 0; j < mtxArr->m - 1; j++) {
             printf("%lf ", mtxArr->m_c[i*mtxArr->m + j]);
         }
         printf("%lf\n", mtxArr->m_c[i*mtxArr->m + (mtxArr->m - 1)]);
@@ -183,20 +184,20 @@ void print_matrixArray(MatrixArray mtxArr) {
 }
 
 bool are_equal_ma2m(MatrixArray ma, Matrix m){
-    for (int i = 0; i < ma->n; i++)
-        for (int j = 0; j < ma->m; j++)
+    for (uint64_t i = 0; i < ma->n; i++)
+        for (uint64_t j = 0; j < ma->m; j++)
             if(ma->m_c[i*ma->m + j] != m->matrix[i][j]){
-                printf("deu diferente %d %d , %lf , %lf\n",i, j,ma->m_c[i*ma->m + j], m->matrix[i][j]);
+                printf("deu diferente %lu %lu , %lf , %lf\n",i, j,ma->m_c[i*ma->m + j], m->matrix[i][j]);
                 return false;
             }
 
     return true;
 }
 
-Argument create_argument(double** A, u_int ini_ar, u_int ini_ac,
-                         double** B, u_int ini_br, u_int ini_bc,
-                         double** C, u_int ini_cr, u_int ini_cc,
-                         u_int size_ar, u_int size_ac, u_int size_bc, u_int min_size) {
+Argument create_argument(double** A, uint64_t ini_ar, uint64_t ini_ac,
+                         double** B, uint64_t ini_br, uint64_t ini_bc,
+                         double** C, uint64_t ini_cr, uint64_t ini_cc,
+                         uint64_t size_ar, uint64_t size_ac, uint64_t size_bc, uint64_t min_size) {
         Argument a = emalloc(sizeof(targ));
         a->A = A;
         a->B = B;

@@ -13,6 +13,7 @@
 
 #include <pthread.h>
 #include <math.h>
+#include <inttypes.h>
 
 #define P(x) pthread_mutex_lock(x)
 #define V(x) pthread_mutex_unlock(x)
@@ -26,21 +27,21 @@ typedef unsigned long long int u_lint;
 
 typedef struct mat_t{
     double **matrix;
-    u_int n;
-    u_int m;
+    uint64_t n;
+    uint64_t m;
 } mat;
 
 typedef struct mat_c_t{
     double *m_c;
-    u_int n;
-    u_int m;
-    u_int nm;
+    uint64_t n;
+    uint64_t m;
+    uint64_t nm;
 } mat_c;
 
 typedef struct targ_t {
     double **A, **B, **C;
-    u_int ini_ar, ini_ac, ini_br, ini_bc, ini_cr, ini_cc;
-    u_int size_ar, size_ac, size_bc, min_size;
+    uint64_t ini_ar, ini_ac, ini_br, ini_bc, ini_cr, ini_cc;
+    uint64_t size_ar, size_ac, size_bc, min_size;
 } targ;
 
 typedef mat* Matrix;
@@ -53,7 +54,7 @@ typedef targ* Argument;
 
 /* Functions */
 MatrixArray new_matrixArray(char* filename);
-MatrixArray new_matrixArray_clean(u_int n, u_int m);
+MatrixArray new_matrixArray_clean(uint64_t n, uint64_t m);
 void destroy_matrixArray(MatrixArray mtxArr);
 void write_matrixArray(MatrixArray mtxArr, char* filename);
 void reset_matrixArray(MatrixArray mtxArr);
@@ -80,7 +81,7 @@ Matrix new_matrix(char* filename);
  *
  * @return  the new matrix created
  */
-Matrix new_matrix_clean(u_int n, u_int m);
+Matrix new_matrix_clean(uint64_t n, uint64_t m);
 
 /*
  * Function: destroy_matrix
@@ -116,10 +117,10 @@ void write_matrix(Matrix mtx, char* filename);
  */
 void reset_matrix(Matrix mtx);
 
-Argument create_argument(double** A, u_int ini_ar, u_int ini_ac,
-                         double** B, u_int ini_br, u_int ini_bc,
-                         double** C, u_int ini_cr, u_int ini_cc,
-                         u_int size_ar, u_int size_ac, u_int size_bc, u_int min_size);
+Argument create_argument(double** A, uint64_t ini_ar, uint64_t ini_ac,
+                         double** B, uint64_t ini_br, uint64_t ini_bc,
+                         double** C, uint64_t ini_cr, uint64_t ini_cc,
+                         uint64_t size_ar, uint64_t size_ac, uint64_t size_bc, uint64_t min_size);
 
 /* TODO: REMOVE THIS, DEBUGGER */
 void print_matrix(Matrix mtx);

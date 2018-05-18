@@ -12,7 +12,8 @@
 #define __PTMATMUL_H__
 
 #include "macros.h"
+#include <inttypes.h>
 
-void matmul_pt(Matrix A, Matrix B, Matrix C, u_int min_size);
+void matmul_pt(Matrix A, Matrix B, Matrix C, uint64_t min_size);
 
 #endif
