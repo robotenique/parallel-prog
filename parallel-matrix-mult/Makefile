@@ -3,8 +3,8 @@
 # @author: João Gabriel Basi Nº USP: 9793801
 #
 CC=gcc
-CFLAGS = -Wall -pedantic -O3 -std=gnu11
-LDFLAGS = -lrt -lm -fopenmp -pthread -mavx -funroll-loops
+CFLAGS = -Wall -pedantic -O4 -std=gnu11
+LDFLAGS = -lrt -lm -fopenmp -pthread -mavx -funroll-loops 
 
 .PHONY: clean
 

@@ -19,13 +19,15 @@
 void mmb_omp(double** A, int ini_ar, int ini_ac,
                     double** B, int ini_br, int ini_bc,
                     double** C, int ini_cr, int ini_cc,
-                    int size_ar, int size_ac, int size_bc, int min_size) {    
+                    int size_ar, int size_ac, int size_bc, int min_size) {
     if (!size_ac || !size_ar || !size_bc)
         return ;
     if (size_ar <= min_size && size_ac <= min_size && size_bc <= min_size) {
-        for (int i = 0; i < size_ar; i++) {
-            for (int k = 0; k < size_ac; k++) {
-                for (int j = 0; j < size_bc; j++)
+        int i, k, j;
+        #pragma omp for private(i, j, k) schedule(static)
+        for (i = 0; i < size_ar; i++) {
+            for (k = 0; k < size_ac; k++) {
+                for (j = 0; j < size_bc; j++)
                     C[ini_cr+i][ini_cc+j] += A[ini_ar+i][ini_ac+k]*B[ini_br+k][ini_bc+j];
             }
         }
@@ -93,7 +95,6 @@ void matmul_omp(MatrixArray A, MatrixArray B, MatrixArray C){
     u_int a_m = A->m;
     u_int b_n = B->n;
     u_int b_m = B->m;
-    u_int c_n = C->n;
     u_int c_m = C->m;
     double* a = A->m_c;
     double* b = B->m_c;

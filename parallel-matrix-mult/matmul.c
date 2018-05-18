@@ -57,8 +57,8 @@ int main(int argc, char const *argv[]) {
     Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
 
     dtime = omp_get_wtime();
-    matmul_omp_2(mtx_A, mtx_B, mtx_C);
-    //matmul_pt(mtx_A, mtx_B, mtx_C, 128);
+    //matmul_omp_2(mtx_A, mtx_B, mtx_C);
+    matmul_pt(mtx_A, mtx_B, mtx_C, 128);
     dtime = omp_get_wtime() - dtime;
 
     //print_matrix(mtx_C);
