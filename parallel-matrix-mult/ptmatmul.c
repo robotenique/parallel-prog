@@ -49,7 +49,7 @@ void* matmul_pt_rec(void* arg) {
     u_int ini_cr = a->ini_cr;
     u_int ini_cc = a->ini_cc;
     u_int min_size = a->min_size;
-    printf("%d, %d, %d, %d, %d\n", size_ac, size_ar, size_bc, ini_ac, ini_bc);
+    //printf("%d, %d, %d, %d, %d\n", size_ac, size_ar, size_bc, ini_ac, ini_bc);
     if (size_ar <= min_size && size_ac <= min_size && size_bc <= min_size) {
         for (int i = 0; i < size_ar; i++) {
             for (int k = 0; k < size_ac; k++) {
@@ -109,6 +109,15 @@ void* matmul_pt_rec(void* arg) {
                   T->matrix, new_size_ar, new_size_bc,
                   size_ar - new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc, min_size);
     pthread_create(&t8, NULL, &matmul_pt_rec, (void*)a_tmp);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+    pthread_join(t3, NULL);
+    pthread_join(t4, NULL);
+    pthread_join(t5, NULL);
+    pthread_join(t6, NULL);
+    pthread_join(t7, NULL);
+    pthread_join(t8, NULL);
 
     add(C, ini_cr, ini_cc, T->matrix, 0, 0, size_ar, size_bc);
     destroy_matrix(T);

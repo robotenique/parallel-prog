@@ -53,22 +53,22 @@ int main(int argc, char const *argv[]) {
     Matrix mtx_A = new_matrix(file_A);
     Matrix mtx_B = new_matrix(file_B);
 
-    // printf("\n --- Parallel matmul (pt) ---\n"); 
-    // Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
-    //
-    // dtime = omp_get_wtime();
-    // matmul_pt(mtx_A, mtx_B, mtx_C, MIN_SIZE);
-    // dtime = omp_get_wtime() - dtime;
-    //
-    // //print_matrix(mtx_C);
-    // printf("Elapsed: %f\n", dtime);
-    //
-    // if(are_equal_ma2m(mtxArr_C, mtx_C))
-    //     printf("WAU!!!\n");
-    // else
-    //     printf("LIXOOOOOOOOOOO\n");
-    //
-    // destroy_matrix(mtx_C);
+    printf("\n --- Parallel matmul (pt) ---\n");
+    Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
+
+    dtime = omp_get_wtime();
+    matmul_pt(mtx_A, mtx_B, mtx_C, 128);
+    dtime = omp_get_wtime() - dtime;
+
+    //print_matrix(mtx_C);
+    printf("Elapsed: %f\n", dtime);
+
+    if(are_equal_ma2m(mtxArr_C, mtx_C))
+        printf("WAU!!!\n");
+    else
+        printf("LIXOOOOOOOOOOO\n");
+
+    destroy_matrix(mtx_C);
 
     // exit(1);
 
