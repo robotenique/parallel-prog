@@ -17,8 +17,7 @@ int IMPL_TYPE;
 int main(int argc, char const *argv[]) {
     set_prog_name("matmul");
 
-    struct timespec start, finish;
-    double elapsed, dtime;
+    double dtime;
 
     if(argc < 5)
         die("Wrong number of arguments!\nUsage ./main <impl> <file_matrixA> <file_matrixB> <file_matrixC>");
@@ -37,10 +36,10 @@ int main(int argc, char const *argv[]) {
     MatrixArray mtxArr_A = new_matrixArray(file_A);
     MatrixArray mtxArr_B = new_matrixArray(file_B);
     MatrixArray mtxArr_C = new_matrixArray_clean(mtxArr_A->n, mtxArr_B->m);
-    /*printf("MATRIZ A:\n");
-    print_matrixArray(mtxArr_A);
+    printf("MATRIZ A:\n");
+    //print_matrixArray(mtxArr_A);
     printf("MATRIZ B:\n");
-    print_matrixArray(mtxArr_B);*/
+    //print_matrixArray(mtxArr_B);
     printf("--\n");
 
     dtime = omp_get_wtime();
@@ -52,17 +51,20 @@ int main(int argc, char const *argv[]) {
     //print_matrixArray(mtxArr_C);
     printf("Elapsed: %f\n", dtime);
 
+    // destroy_matrixArray(mtxArr_A);
+    // destroy_matrixArray(mtxArr_B);
+    // destroy_matrixArray(mtxArr_C);
 
     // exit(1);
 
-    printf("\n --- Trashy matmul ---\n");
+    printf("\n --- Seq matmul ---\n");
     Matrix mtx_A = new_matrix(file_A);
     Matrix mtx_B = new_matrix(file_B);
     Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
 
     dtime = omp_get_wtime();
-    //matmul_seq(mtx_A, mtx_B, mtx_C);
-    matmul_trashy(mtx_A, mtx_B, mtx_C);
+    matmul_seq(mtx_A, mtx_B, mtx_C, MIN_SIZE);
+    //matmul_trashy(mtx_A, mtx_B, mtx_C);
     dtime = omp_get_wtime() - dtime;
 
     //print_matrix(mtx_C);
@@ -84,25 +86,32 @@ int main(int argc, char const *argv[]) {
 
     exit(1);
 
-    printf("time\n");
+    destroy_matrix(mtx_A);
+    destroy_matrix(mtx_B);
+    destroy_matrix(mtx_C);
 
-    for (int min_size = 64; min_size <= 2048; min_size += 64) {
-        Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
-        // print_matrix(mtx_A);
-        // print_matrix(mtx_B);
+    //exit(1);
 
-        clock_gettime(CLOCK_MONOTONIC, &start);
+    //printf("time\n");
 
-        matmul_seq_opt(mtx_A, mtx_B, mtx_C, min_size);
-
-        clock_gettime(CLOCK_MONOTONIC, &finish);
-
-        elapsed = (finish.tv_sec - start.tv_sec) * HUNDRED;
-        elapsed += (finish.tv_nsec - start.tv_nsec) / MILLION;
-        printf("%f\n", elapsed);
-
-        //print_matrix(mtx_C);
-    }
+    // for (int min_size = 64; min_size <= 2048; min_size += 64) {
+    //     Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
+    //     // print_matrix(mtx_A);
+    //     // print_matrix(mtx_B);
+    //
+    //     clock_gettime(CLOCK_MONOTONIC, &start);
+    //
+    //     matmul_seq_opt(mtx_A, mtx_B, mtx_C, min_size);
+    //
+    //     clock_gettime(CLOCK_MONOTONIC, &finish);
+    //
+    //     elapsed = (finish.tv_sec - start.tv_sec) * HUNDRED;
+    //     elapsed += (finish.tv_nsec - start.tv_nsec) / MILLION;
+    //     printf("%f\n", elapsed);
+    //
+    //     //print_matrix(mtx_C);
+    // }
 
     //write_matrix(mtx_C, file_C);
+    return 0;
 }

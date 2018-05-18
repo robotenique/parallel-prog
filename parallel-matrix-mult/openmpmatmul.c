@@ -26,14 +26,13 @@ void matmul_omp(MatrixArray A, MatrixArray B, MatrixArray C){
     double* b = B->m_c;
     double* c = C->m_c;
     int th_id;
-    int chunk = a_n/get_nprocs();
     omp_set_num_threads(get_nprocs());
 
     #pragma omp parallel
     {
         int i, j, k;
         th_id = omp_get_thread_num();
-        #pragma omp for schedule(guided, chunk)
+        #pragma omp for schedule(static)
         // for (i = 0; i < a_n; i++) {
         //      //printf("Thread #%d is doing row %d.\n",th_id,i);
         //     for (j = 0; j < b_m; j++) {
