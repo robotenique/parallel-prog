@@ -1,10 +1,11 @@
 #include "macros.h"
 #include "openmpmatmul.h"
+#include <immintrin.h>
 #include <sys/sysinfo.h>
+#include <sys/resource.h>
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 // for (i = 0; i < a_n; i++) {
 //      //printf("Thread #%d is doing row %d.\n",th_id,i);
 //     for (j = 0; j < b_m; j++) {
@@ -14,6 +15,11 @@
 //         c[i*c_m + j] = dot;
 //     }
 // }
+
+void matmul_omp_2(Matrix A, Matrix B, Matrix C) {
+    //mmo_d(A->n, A->m, B->m, A->matrix, B->matrix, C->matrix);
+
+}
 
 void matmul_omp(MatrixArray A, MatrixArray B, MatrixArray C){
     u_int a_n = A->n;
