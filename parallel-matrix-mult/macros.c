@@ -197,7 +197,8 @@ bool are_equal_ma2m(MatrixArray ma, Matrix m){
 Argument create_argument(double** A, uint64_t ini_ar, uint64_t ini_ac,
                          double** B, uint64_t ini_br, uint64_t ini_bc,
                          double** C, uint64_t ini_cr, uint64_t ini_cc,
-                         uint64_t size_ar, uint64_t size_ac, uint64_t size_bc, uint64_t min_size) {
+                         uint64_t size_ar, uint64_t size_ac, uint64_t size_bc,
+                         uint64_t min_size, uint64_t num_threads) {
         Argument a = emalloc(sizeof(targ));
         a->A = A;
         a->B = B;
@@ -212,5 +213,6 @@ Argument create_argument(double** A, uint64_t ini_ar, uint64_t ini_ac,
         a->size_ac = size_ac;
         a->size_bc = size_bc;
         a->min_size = min_size;
+        a->num_threads = num_threads;
         return a;
     }

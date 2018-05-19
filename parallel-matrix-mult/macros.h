@@ -41,7 +41,7 @@ typedef struct mat_c_t{
 typedef struct targ_t {
     double **A, **B, **C;
     uint64_t ini_ar, ini_ac, ini_br, ini_bc, ini_cr, ini_cc;
-    uint64_t size_ar, size_ac, size_bc, min_size;
+    uint64_t size_ar, size_ac, size_bc, min_size, num_threads;
 } targ;
 
 typedef mat* Matrix;
@@ -120,7 +120,8 @@ void reset_matrix(Matrix mtx);
 Argument create_argument(double** A, uint64_t ini_ar, uint64_t ini_ac,
                          double** B, uint64_t ini_br, uint64_t ini_bc,
                          double** C, uint64_t ini_cr, uint64_t ini_cc,
-                         uint64_t size_ar, uint64_t size_ac, uint64_t size_bc, uint64_t min_size);
+                         uint64_t size_ar, uint64_t size_ac, uint64_t size_bc,
+                         uint64_t min_size, uint64_t num_threads);
 
 /* TODO: REMOVE THIS, DEBUGGER */
 void print_matrix(Matrix mtx);

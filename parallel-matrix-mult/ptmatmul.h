@@ -14,6 +14,8 @@
 #include "macros.h"
 #include <inttypes.h>
 
+#define MAX_THREADS 5000
+
 void matmul_pt(Matrix A, Matrix B, Matrix C, uint64_t min_size);
 
 #endif
