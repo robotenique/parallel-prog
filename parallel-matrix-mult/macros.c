@@ -194,24 +194,30 @@ bool are_equal_ma2m(MatrixArray ma, Matrix m){
     return true;
 }
 
-Argument create_argument(double** A, uint64_t ini_ar, uint64_t ini_ac,
-                         double** B, uint64_t ini_br, uint64_t ini_bc,
-                         double** C, uint64_t ini_cr, uint64_t ini_cc,
+bool are_equal_ma2ma(MatrixArray ma, MatrixArray m){
+    for (uint64_t i = 0; i < ma->n; i++)
+        for (uint64_t j = 0; j < ma->m; j++)
+            if(ma->m_c[i*ma->m + j] != m->m_c[i*m->m + j]){
+                printf("deu diferente %lu %lu , %lf , %lf\n",i, j,ma->m_c[i*ma->m + j], m->m_c[i*m->m + j]);
+                return false;
+            }
+
+    return true;
+}
+
+Argument create_argument(double* A, double* B, double* C,
                          uint64_t size_ar, uint64_t size_ac, uint64_t size_bc,
+                         uint64_t or_size_ac, uint64_t or_size_bc,
                          uint64_t min_size, uint64_t num_threads) {
         Argument a = emalloc(sizeof(targ));
         a->A = A;
         a->B = B;
         a->C = C;
-        a->ini_ar = ini_ar;
-        a->ini_ac = ini_ac;
-        a->ini_br = ini_br;
-        a->ini_bc = ini_bc;
-        a->ini_cr = ini_cr;
-        a->ini_cc = ini_cc;
         a->size_ar = size_ar;
         a->size_ac = size_ac;
         a->size_bc = size_bc;
+        a->or_size_ac = or_size_ac;
+        a->or_size_bc = or_size_bc;
         a->min_size = min_size;
         a->num_threads = num_threads;
         return a;

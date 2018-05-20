@@ -39,8 +39,9 @@ typedef struct mat_c_t{
 } mat_c;
 
 typedef struct targ_t {
-    double **A, **B, **C;
+    double *A, *B, *C;
     uint64_t ini_ar, ini_ac, ini_br, ini_bc, ini_cr, ini_cc;
+    uint64_t or_size_ac, or_size_bc;
     uint64_t size_ar, size_ac, size_bc, min_size, num_threads;
 } targ;
 
@@ -117,15 +118,16 @@ void write_matrix(Matrix mtx, char* filename);
  */
 void reset_matrix(Matrix mtx);
 
-Argument create_argument(double** A, uint64_t ini_ar, uint64_t ini_ac,
-                         double** B, uint64_t ini_br, uint64_t ini_bc,
-                         double** C, uint64_t ini_cr, uint64_t ini_cc,
+Argument create_argument(double* A, double* B, double* C,
                          uint64_t size_ar, uint64_t size_ac, uint64_t size_bc,
+                         uint64_t or_size_ac, uint64_t or_size_bc,
                          uint64_t min_size, uint64_t num_threads);
 
 /* TODO: REMOVE THIS, DEBUGGER */
 void print_matrix(Matrix mtx);
 
 bool are_equal_ma2m(MatrixArray ma, Matrix m);
+
+bool are_equal_ma2ma(MatrixArray ma, MatrixArray m);
 
 #endif

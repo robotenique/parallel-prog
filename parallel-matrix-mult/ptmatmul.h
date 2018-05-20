@@ -16,6 +16,6 @@
 
 #define MAX_THREADS 5000
 
-void matmul_pt(Matrix A, Matrix B, Matrix C, uint64_t min_size);
+void matmul_pt(MatrixArray A, MatrixArray B, MatrixArray C, uint64_t min_size);
 
 #endif

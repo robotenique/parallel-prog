@@ -33,7 +33,7 @@ int main(int argc, char const *argv[]) {
     /* -------------- Using openMP -------------- */
     MatrixArray mtxArr_A = new_matrixArray(file_A);
     MatrixArray mtxArr_B = new_matrixArray(file_B);
-    MatrixArray mtxArr_C = new_matrixArray_clean(mtxArr_A->n, mtxArr_B->m);
+    MatrixArray refMtxArr_C = new_matrixArray_clean(mtxArr_A->n, mtxArr_B->m);
     printf("MATRIZ A:\n");
     //print_matrixArray(mtxArr_A);
     printf("MATRIZ B:\n");
@@ -41,41 +41,39 @@ int main(int argc, char const *argv[]) {
     printf("--\n");
 
     dtime = omp_get_wtime();
-    matmul_omp(mtxArr_A, mtxArr_B, mtxArr_C);
+    matmul_omp(mtxArr_A, mtxArr_B, refMtxArr_C);
     //matcoisa(mtxArr_A, mtxArr_B, mtxArr_C);
     dtime = omp_get_wtime() - dtime;
 
     printf("\n --- Parallel matmul (omp) ---\n");
-    //print_matrixArray(mtxArr_C);
+    //print_matrixArray(refMtxArr_C);
     printf("Elapsed: %f\n", dtime);
 
     // exit(1);
 
-    Matrix mtx_A = new_matrix(file_A);
-    Matrix mtx_B = new_matrix(file_B);
-
     printf("\n --- Parallel matmul (pt) ---\n");
-    Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
+    MatrixArray mtxArr_C = new_matrixArray_clean(mtxArr_A->n, mtxArr_B->m);
 
     dtime = omp_get_wtime();
     //matmul_omp_2(mtx_A, mtx_B, mtx_C);
-    matmul_pt(mtx_A, mtx_B, mtx_C, 256);
+    matmul_pt(mtxArr_A, mtxArr_B, mtxArr_C, 256);
     dtime = omp_get_wtime() - dtime;
 
-    //print_matrix(mtx_C);
+    //print_matrixArray(mtxArr_C);
     printf("Elapsed: %f\n", dtime);
 
-    if(are_equal_ma2m(mtxArr_C, mtx_C))
+    if(are_equal_ma2ma(refMtxArr_C, mtxArr_C))
         printf("WAU!!!\n");
     else
         printf("LIXOOOOOOOOOOO\n");
 
-    destroy_matrix(mtx_C);
-
     // exit(1);
 
     printf("\n --- Seq matmul ---\n");
-    mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
+
+    Matrix mtx_A = new_matrix(file_A);
+    Matrix mtx_B = new_matrix(file_B);
+    Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
 
     dtime = omp_get_wtime();
     matmul_seq(mtx_A, mtx_B, mtx_C, MIN_SIZE);
@@ -85,7 +83,7 @@ int main(int argc, char const *argv[]) {
     //print_matrix(mtx_C);
     printf("Elapsed: %f\n", dtime);
 
-    if(are_equal_ma2m(mtxArr_C, mtx_C))
+    if(are_equal_ma2m(refMtxArr_C, mtx_C))
         printf("WAU!!!\n");
     else
         printf("LIXOOOOOOOOOOO\n");
@@ -95,6 +93,7 @@ int main(int argc, char const *argv[]) {
     destroy_matrixArray(mtxArr_A);
     destroy_matrixArray(mtxArr_B);
     destroy_matrixArray(mtxArr_C);
+    destroy_matrixArray(refMtxArr_C);
 
     destroy_matrix(mtx_A);
     destroy_matrix(mtx_B);
