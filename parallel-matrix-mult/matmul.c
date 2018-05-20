@@ -56,7 +56,7 @@ int main(int argc, char const *argv[]) {
 
     dtime = omp_get_wtime();
     //matmul_omp_2(mtx_A, mtx_B, mtx_C);
-    matmul_pt(mtxArr_A, mtxArr_B, mtxArr_C, 256);
+    matmul_pt(mtxArr_A, mtxArr_B, mtxArr_C);
     dtime = omp_get_wtime() - dtime;
 
     //print_matrixArray(mtxArr_C);
@@ -76,7 +76,7 @@ int main(int argc, char const *argv[]) {
     Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
 
     dtime = omp_get_wtime();
-    matmul_seq(mtx_A, mtx_B, mtx_C, MIN_SIZE);
+    matmul_seq(mtx_A, mtx_B, mtx_C);
     //matmul_trashy(mtx_A, mtx_B, mtx_C);
     dtime = omp_get_wtime() - dtime;
 

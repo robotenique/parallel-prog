@@ -18,6 +18,8 @@
 #define P(x) pthread_mutex_lock(x)
 #define V(x) pthread_mutex_unlock(x)
 
+#define MIN_SIZE 256
+
 /* Simple types definition */
 typedef enum { false, true } bool;
 
@@ -51,15 +53,12 @@ typedef mat_c* MatrixArray;
 
 typedef targ* Argument;
 
-
-
 /* Functions */
 MatrixArray new_matrixArray(char* filename);
 MatrixArray new_matrixArray_clean(uint64_t n, uint64_t m);
 void destroy_matrixArray(MatrixArray mtxArr);
 void write_matrixArray(MatrixArray mtxArr, char* filename);
 void reset_matrixArray(MatrixArray mtxArr);
-void print_matrixArray(MatrixArray mtxArr);
 
 /*
  * Function: new_matrix
@@ -118,16 +117,38 @@ void write_matrix(Matrix mtx, char* filename);
  */
 void reset_matrix(Matrix mtx);
 
+/*
+ * Function: create_argument
+ * --------------------------------------------------------
+ * Create an Argument to be passed to matmul_pt
+ *
+ * @args  A : pointer to the first position of the first MatrixArray
+ *        B : pointer to the first position of the second MatrixArray
+ *        C : pointer to the first position of the result MatrixArray
+ *        size_ar : number of rows of A
+ *        size_ac : number of collumns of A
+ *        size_bc : number of collumns of B
+ *        or_size_ac : original number of collumns of A
+ *        or_size_ar : original number of collumns of B
+ *        min_size : minimum matrix size for the trivial algorithm to be executed
+ *        num_threads : number of threads opened
+ *
+ * @return an Argument struct with all the informations
+ */
 Argument create_argument(double* A, double* B, double* C,
                          uint64_t size_ar, uint64_t size_ac, uint64_t size_bc,
                          uint64_t or_size_ac, uint64_t or_size_bc,
-                         uint64_t min_size, uint64_t num_threads);
+                         uint64_t num_threads);
 
 /* TODO: REMOVE THIS, DEBUGGER */
 void print_matrix(Matrix mtx);
 
+void print_matrixArray(MatrixArray mtxArr);
+
 bool are_equal_ma2m(MatrixArray ma, Matrix m);
 
 bool are_equal_ma2ma(MatrixArray ma, MatrixArray m);
+
+void print_num_threads();
 
 #endif

@@ -16,6 +16,20 @@
 
 #define MAX_THREADS 5000
 
-void matmul_pt(MatrixArray A, MatrixArray B, MatrixArray C, uint64_t min_size);
+/*
+ * Function: matmul_pt
+ * --------------------------------------------------------
+ * This function does a matrix multiplication of AB and put the result
+ * in C, by using pthread.
+ *
+ * @args A : MatrixArray
+ *       B : MatrixArray
+ *       C : MatrixArray
+ *       min_size : minimum matrix size for the trivial algorithm to be executed
+ *
+ * @return
+ */
+
+void matmul_pt(MatrixArray A, MatrixArray B, MatrixArray C);
 
 #endif

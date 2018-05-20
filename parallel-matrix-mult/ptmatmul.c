@@ -2,20 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
-#include <unistd.h>
 #include "macros.h"
 #include "ptmatmul.h"
-
-void print_num_threads() {
-    char s[80];
-    sprintf(s, "cat /proc/%d/status | grep \"Threads\" | tr -d \"Threads:\"", getpid());
-    FILE *p = popen(s, "r");
-    int nt;
-    if (p != NULL) {
-        fscanf(p, "%d", &nt);
-        printf("%d\n", nt);
-    }
-}
 
 void* matmul_pt_rec(void* arg) {
     Argument a = (Argument)arg;
@@ -34,7 +22,7 @@ void* matmul_pt_rec(void* arg) {
     uint64_t min_size = a->min_size;
     uint64_t num_threads = a->num_threads;
     if (num_threads >= MAX_THREADS ||
-        (size_ar <= min_size && size_ac <= min_size && size_bc <= min_size)) {
+        (size_ar <= MIN_SIZE && size_ac <= MIN_SIZE && size_bc <= MIN_SIZE)) {
         uint64_t i, j, k;
         double *pB, *pC, r;
         for (i = 0; i < size_ar; i++) {
@@ -59,23 +47,23 @@ void* matmul_pt_rec(void* arg) {
     a_tmp = create_argument(A, B, C,
                   new_size_ar, new_size_ac, new_size_bc,
                   or_size_ac, or_size_bc,
-                  min_size, 4*num_threads);
+                  4*num_threads);
     pthread_create(&t1, NULL, &matmul_pt_rec, (void*)a_tmp);
     a_tmp = create_argument(A, B + new_size_bc, C + new_size_bc,
                   new_size_ar, new_size_ac, size_bc - new_size_bc,
                   or_size_ac, or_size_bc,
-                  min_size, 4*num_threads);
+                  4*num_threads);
     pthread_create(&t2, NULL, &matmul_pt_rec, (void*)a_tmp);
     a_tmp = create_argument(A + new_size_ar*or_size_ac, B, C + new_size_ar*or_size_bc,
                   size_ar - new_size_ar, new_size_ac, new_size_bc,
                   or_size_ac, or_size_bc,
-                  min_size, 4*num_threads);
+                  4*num_threads);
     pthread_create(&t3, NULL, &matmul_pt_rec, (void*)a_tmp);
     a_tmp = create_argument(A + new_size_ar*or_size_ac, B + new_size_bc,
                   C + new_size_ar*or_size_bc + new_size_bc,
                   size_ar - new_size_ar, new_size_ac, size_bc - new_size_bc,
                   or_size_ac, or_size_bc,
-                  min_size, 4*num_threads);
+                  4*num_threads);
     pthread_create(&t4, NULL, &matmul_pt_rec, (void*)a_tmp);
 
     pthread_join(t1, NULL);
@@ -86,26 +74,26 @@ void* matmul_pt_rec(void* arg) {
     a_tmp = create_argument(A + new_size_ac, B + new_size_ac*or_size_bc, C,
                   new_size_ar, size_ac - new_size_ac, new_size_bc,
                   or_size_ac, or_size_bc,
-                  min_size, 4*num_threads);
+                  4*num_threads);
     pthread_create(&t5, NULL, &matmul_pt_rec, (void*)a_tmp);
     a_tmp = create_argument(A + new_size_ac, B + new_size_ac*or_size_bc + new_size_bc,
                   C + new_size_bc,
                   new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc,
                   or_size_ac, or_size_bc,
-                  min_size, 4*num_threads);
+                  4*num_threads);
     pthread_create(&t6, NULL, &matmul_pt_rec, (void*)a_tmp);
     a_tmp = create_argument(A + new_size_ar*or_size_ac + new_size_ac, B + new_size_ac*or_size_bc,
                   C + new_size_ar*or_size_bc,
                   size_ar - new_size_ar, size_ac - new_size_ac, new_size_bc,
                   or_size_ac, or_size_bc,
-                  min_size, 4*num_threads);
+                  4*num_threads);
     pthread_create(&t7, NULL, &matmul_pt_rec, (void*)a_tmp);
     a_tmp = create_argument(A + new_size_ar*or_size_ac + new_size_ac,
                   B + new_size_ac*or_size_bc + new_size_bc,
                   C + new_size_ar*or_size_bc + new_size_bc,
                   size_ar - new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc,
                   or_size_ac, or_size_bc,
-                  min_size, 4*num_threads);
+                  4*num_threads);
     pthread_create(&t8, NULL, &matmul_pt_rec, (void*)a_tmp);
 
     pthread_join(t5, NULL);
@@ -117,8 +105,8 @@ void* matmul_pt_rec(void* arg) {
     return NULL;
 }
 
-void matmul_pt(MatrixArray A, MatrixArray B, MatrixArray C, uint64_t min_size) {
+void matmul_pt(MatrixArray A, MatrixArray B, MatrixArray C) {
     Argument a = create_argument(A->m_c, B->m_c, C->m_c, A->n, A->m, B->m,
-                                 A->m, B->m, min_size, 1);
+                                 A->m, B->m, 1);
     matmul_pt_rec((void*)a);
 }

@@ -10,19 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
+#include <unistd.h> // TODO: Remove this header
 #include "macros.h"
 #include "error.h"
-
-void print_matrix(Matrix mtx) {
-    printf("\n");
-    for (uint64_t i = 0; i < mtx->n; i++) {
-        for (uint64_t j = 0; j < mtx->m - 1; j++) {
-            printf("%lf ", mtx->matrix[i][j]);
-        }
-        printf("%lf\n", mtx->matrix[i][mtx->m - 1]);
-    }
-}
-
 
 
 Matrix new_matrix(char* filename) {
@@ -173,6 +163,34 @@ void write_matrixArray(MatrixArray mtxArr, char* filename){
 void reset_matrixArray(MatrixArray mtxArr){
     memset(mtxArr->m_c, 0.0f, mtxArr->nm*sizeof(double));
 }
+
+Argument create_argument(double* A, double* B, double* C,
+                         uint64_t size_ar, uint64_t size_ac, uint64_t size_bc,
+                         uint64_t or_size_ac, uint64_t or_size_bc,
+                         uint64_t num_threads) {
+    Argument a = emalloc(sizeof(targ));
+    a->A = A;
+    a->B = B;
+    a->C = C;
+    a->size_ar = size_ar;
+    a->size_ac = size_ac;
+    a->size_bc = size_bc;
+    a->or_size_ac = or_size_ac;
+    a->or_size_bc = or_size_bc;
+    a->num_threads = num_threads;
+    return a;
+}
+
+void print_matrix(Matrix mtx) {
+    printf("\n");
+    for (uint64_t i = 0; i < mtx->n; i++) {
+        for (uint64_t j = 0; j < mtx->m - 1; j++) {
+            printf("%lf ", mtx->matrix[i][j]);
+        }
+        printf("%lf\n", mtx->matrix[i][mtx->m - 1]);
+    }
+}
+
 void print_matrixArray(MatrixArray mtxArr) {
     printf("\n");
     for (uint64_t i = 0; i < mtxArr->n; i++) {
@@ -205,20 +223,13 @@ bool are_equal_ma2ma(MatrixArray ma, MatrixArray m){
     return true;
 }
 
-Argument create_argument(double* A, double* B, double* C,
-                         uint64_t size_ar, uint64_t size_ac, uint64_t size_bc,
-                         uint64_t or_size_ac, uint64_t or_size_bc,
-                         uint64_t min_size, uint64_t num_threads) {
-        Argument a = emalloc(sizeof(targ));
-        a->A = A;
-        a->B = B;
-        a->C = C;
-        a->size_ar = size_ar;
-        a->size_ac = size_ac;
-        a->size_bc = size_bc;
-        a->or_size_ac = or_size_ac;
-        a->or_size_bc = or_size_bc;
-        a->min_size = min_size;
-        a->num_threads = num_threads;
-        return a;
+void print_num_threads() {
+    char s[80];
+    sprintf(s, "cat /proc/%d/status | grep \"Threads\" | tr -d \"Threads:\"", getpid());
+    FILE *p = popen(s, "r");
+    int nt;
+    if (p != NULL) {
+        fscanf(p, "%d", &nt);
+        printf("%d\n", nt);
     }
+}

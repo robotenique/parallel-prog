@@ -6,10 +6,10 @@
 void matmul_seq_rec(double** A, uint64_t ini_ar, uint64_t ini_ac,
                     double** B, uint64_t ini_br, uint64_t ini_bc,
                     double** C, uint64_t ini_cr, uint64_t ini_cc,
-                    uint64_t size_ar, uint64_t size_ac, uint64_t size_bc, uint64_t min_size) {
+                    uint64_t size_ar, uint64_t size_ac, uint64_t size_bc) {
     if (!size_ac || !size_ar || !size_bc)
         return ;
-    if (size_ar <= min_size && size_ac <= min_size && size_bc <= min_size) {
+    if (size_ar <= MIN_SIZE && size_ac <= MIN_SIZE && size_bc <= MIN_SIZE) {
         for (uint64_t i = 0; i < size_ar; i++) {
             for (uint64_t k = 0; k < size_ac; k++) {
                 for (uint64_t j = 0; j < size_bc; j++)
@@ -25,42 +25,42 @@ void matmul_seq_rec(double** A, uint64_t ini_ar, uint64_t ini_ac,
     matmul_seq_rec(A, ini_ar, ini_ac,
                    B, ini_br, ini_bc,
                    C, ini_cr, ini_cc,
-                   new_size_ar, new_size_ac, new_size_bc, min_size);
+                   new_size_ar, new_size_ac, new_size_bc);
     matmul_seq_rec(A, ini_ar, ini_ac,
                    B, ini_br, ini_bc + new_size_bc,
                    C, ini_cr, ini_cc + new_size_bc,
-                   new_size_ar, new_size_ac, size_bc - new_size_bc, min_size);
+                   new_size_ar, new_size_ac, size_bc - new_size_bc);
     matmul_seq_rec(A, ini_ar + new_size_ar, ini_ac,
                    B, ini_br, ini_bc,
                    C, ini_cr + new_size_ar, ini_cc,
-                   size_ar - new_size_ar, new_size_ac, new_size_bc, min_size);
+                   size_ar - new_size_ar, new_size_ac, new_size_bc);
     matmul_seq_rec(A, ini_ar + new_size_ar, ini_ac,
                    B, ini_br, ini_bc + new_size_bc,
                    C, ini_cr + new_size_ar, ini_cc + new_size_bc,
-                   size_ar - new_size_ar, new_size_ac, size_bc - new_size_bc, min_size);
+                   size_ar - new_size_ar, new_size_ac, size_bc - new_size_bc);
 
     matmul_seq_rec(A, ini_ar, ini_ac + new_size_ac,
                    B, ini_br + new_size_ac, ini_bc,
                    C, ini_cr, ini_cc,
-                   new_size_ar, size_ac - new_size_ac, new_size_bc, min_size);
+                   new_size_ar, size_ac - new_size_ac, new_size_bc);
     matmul_seq_rec(A, ini_ar, ini_ac + new_size_ac,
                    B, ini_br + new_size_ac, ini_bc + new_size_bc,
                    C, ini_cr, ini_cc + new_size_bc,
-                   new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc, min_size);
+                   new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc);
     matmul_seq_rec(A, ini_ar + new_size_ar, ini_ac + new_size_ac,
                    B, ini_br + new_size_ac, ini_bc,
                    C, ini_cr + new_size_ar, ini_cc,
-                   size_ar - new_size_ar, size_ac - new_size_ac, new_size_bc, min_size);
+                   size_ar - new_size_ar, size_ac - new_size_ac, new_size_bc);
     matmul_seq_rec(A, ini_ar + new_size_ar, ini_ac + new_size_ac,
                    B, ini_br + new_size_ac, ini_bc + new_size_bc,
                    C, ini_cr + new_size_ar, ini_cc + new_size_bc,
-                   size_ar - new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc, min_size);
+                   size_ar - new_size_ar, size_ac - new_size_ac, size_bc - new_size_bc);
 
     return ;
 }
 
-void matmul_seq(Matrix A, Matrix B, Matrix C, uint64_t min_size) {
-    matmul_seq_rec(A->matrix, 0, 0, B->matrix, 0, 0, C->matrix, 0, 0, A->n, A->m, B->m, min_size);
+void matmul_seq(Matrix A, Matrix B, Matrix C) {
+    matmul_seq_rec(A->matrix, 0, 0, B->matrix, 0, 0, C->matrix, 0, 0, A->n, A->m, B->m);
 }
 
 void matmul_trashy(Matrix A, Matrix B, Matrix C){
