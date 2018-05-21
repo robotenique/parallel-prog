@@ -14,6 +14,14 @@
 #include "macros.h"
 #include "error.h"
 
+uint64_t ceil64(uint64_t num, uint64_t den) {
+    if (!num) return 0;
+    return (num-1)/den + 1;
+}
+
+uint64_t ceilDiff(uint64_t coef, uint64_t num, uint64_t den) {
+    return ceil64((coef+1)*num, den) - ceil64(coef*num, den);
+}
 
 Matrix new_matrix(char* filename) {
     FILE * fp;

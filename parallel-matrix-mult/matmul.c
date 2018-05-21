@@ -42,6 +42,7 @@ int main(int argc, char const *argv[]) {
 
     dtime = omp_get_wtime();
     matmul_omp(mtxArr_A, mtxArr_B, refMtxArr_C);
+    //matmul_pt2(mtxArr_A, mtxArr_B, refMtxArr_C);
     //matcoisa(mtxArr_A, mtxArr_B, mtxArr_C);
     dtime = omp_get_wtime() - dtime;
 

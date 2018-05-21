@@ -31,5 +31,6 @@
  */
 
 void matmul_pt(MatrixArray A, MatrixArray B, MatrixArray C);
+void matmul_pt2(MatrixArray A, MatrixArray B, MatrixArray C);
 
 #endif

@@ -60,6 +60,9 @@ void destroy_matrixArray(MatrixArray mtxArr);
 void write_matrixArray(MatrixArray mtxArr, char* filename);
 void reset_matrixArray(MatrixArray mtxArr);
 
+uint64_t ceil64(uint64_t num, uint64_t den);
+uint64_t ceilDiff(uint64_t coef, uint64_t num, uint64_t den);
+
 /*
  * Function: new_matrix
  * --------------------------------------------------------
