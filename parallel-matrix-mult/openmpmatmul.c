@@ -41,13 +41,14 @@ void mmo_omp(MatrixArray A, MatrixArray B, MatrixArray C) {
                 double* A_inner = pA + ini_k*size_ac + ini_i;
                 double* B_inner = pB + ini_i*size_bc + ini_j;
                 double* C_inner = pC + ini_k*size_bc + ini_j;
-                double *pB_inner, *pC_inner, r_inner;
+                double *pB_inner, *pC_inner;
                 uint64_t size_ac_inner = diff_i;
                 uint64_t size_ar_inner = diff_k;
                 uint64_t size_bc_inner = diff_j;
                 uint64_t or_size_ac = size_ac;
                 uint64_t or_size_bc = size_bc;
                 uint64_t i_inner, j_inner, k_inner;
+                double r_inner; /* Tirar isso daqui!*/
                 for (i_inner = 0; i_inner < size_ar_inner; i_inner++) {
                     for (k_inner = 0; k_inner < size_ac_inner; k_inner++) {
                         r_inner = *A_inner++;
