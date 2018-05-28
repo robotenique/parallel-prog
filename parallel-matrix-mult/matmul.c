@@ -57,7 +57,8 @@ int main(int argc, char const *argv[]) {
 
     dtime = omp_get_wtime();
     //matmul_omp_2(mtx_A, mtx_B, mtx_C);
-    matmul_pt(mtxArr_A, mtxArr_B, mtxArr_C);
+    matmul_omp2(mtxArr_A, mtxArr_B, mtxArr_C);
+    //matmul_pt(mtxArr_A, mtxArr_B, mtxArr_C);
     dtime = omp_get_wtime() - dtime;
 
     //print_matrixArray(mtxArr_C);
