@@ -24,6 +24,6 @@
  */
 void matmul_omp(MatrixArray A, MatrixArray B, MatrixArray C);
 
-void matmul_omp_2(Matrix A, Matrix B, Matrix C);
+void matmul_omp2(MatrixArray A, MatrixArray B, MatrixArray C);
 
 #endif

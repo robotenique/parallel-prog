@@ -41,7 +41,10 @@ void mmo_omp(MatrixArray A, MatrixArray B, MatrixArray C) {
                 double* A_inner = pA + ini_k*size_ac + ini_i;
                 double* B_inner = pB + ini_i*size_bc + ini_j;
                 double* C_inner = pC + ini_k*size_bc + ini_j;
-                double *pB_inner, *pC_inner;
+                // double *pB_inner, *pC_inner;
+                uint64_t a_idx = 0;
+                uint64_t b_idx = 0;
+                uint64_t c_idx = 0;
                 uint64_t size_ac_inner = diff_i;
                 uint64_t size_ar_inner = diff_k;
                 uint64_t size_bc_inner = diff_j;
@@ -51,13 +54,13 @@ void mmo_omp(MatrixArray A, MatrixArray B, MatrixArray C) {
                 double r_inner; /* Tirar isso daqui!*/
                 for (i_inner = 0; i_inner < size_ar_inner; i_inner++) {
                     for (k_inner = 0; k_inner < size_ac_inner; k_inner++) {
-                        r_inner = *A_inner++;
-                        pB_inner = B_inner + k_inner*or_size_bc;
-                        pC_inner = C_inner + i_inner*or_size_bc;
+                        r_inner = A_inner[a_idx++];
+                        b_idx = k_inner*or_size_bc;
+                        c_idx = i_inner*or_size_bc;
                         for (j_inner = 0; j_inner < size_bc_inner; j_inner++)
-                            *pC_inner++ += r_inner* *pB_inner++;
+                            C_inner[c_idx++] += r_inner*B_inner[b_idx++];
                     }
-                    A_inner += or_size_ac - size_ac_inner;
+                    a_idx += or_size_ac - size_ac_inner;
                 }
 
                 ini_j += diff_j;
