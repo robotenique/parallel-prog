@@ -241,3 +241,7 @@ void print_num_threads() {
         printf("%d\n", nt);
     }
 }
+
+uint64_t getCacheSize() {
+    return sysconf(_SC_LEVEL1_DCACHE_SIZE);
+}

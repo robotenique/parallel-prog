@@ -13,14 +13,14 @@ all: main
 
 
 main: matmul.o error.o macros.o seqmatmul.o openmpmatmul.o ptmatmul.o
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) -o $@ $^ $(LDFLAGS) $(CLFLAGS)
 
 %.o: %.c %.h
-	$(CC) $(CFLAGS) -c $< $(LDFLAGS) -o $@
+	$(CC) $(CFLAGS) -c $< $(LDFLAGS) $(CLFLAGS) -o $@
 
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< $(LDFLAGS) -o $@
+	$(CC) $(CFLAGS) -c $< $(LDFLAGS) $(CLFLAGS) -o $@
 
 
 clean:

@@ -18,7 +18,11 @@
 #define P(x) pthread_mutex_lock(x)
 #define V(x) pthread_mutex_unlock(x)
 
-#define MIN_SIZE 256
+#ifndef MIN_SIZE
+#define MIN_SIZE 64
+#endif
+
+#define MIN_AREA 65536 // 256*256
 
 /* Simple types definition */
 typedef enum { false, true } bool;
@@ -153,5 +157,7 @@ bool are_equal_ma2m(MatrixArray ma, Matrix m);
 bool are_equal_ma2ma(MatrixArray ma, MatrixArray m);
 
 void print_num_threads();
+
+uint64_t getCacheSize();
 
 #endif

@@ -22,15 +22,67 @@ int main(int argc, char const *argv[]) {
 
     if (!strcmp(argv[1], "p"))
         IMPL_TYPE = 0;
-    else if(!strcmp(argv[1], "o"))
+    else if (!strcmp(argv[1], "o"))
         IMPL_TYPE = 1;
+    else if (!strcmp(argv[1], "t")) // TODO : Remove this
+        IMPL_TYPE = 2;
     else
         die("Invalid <implementation> provided.");
 
     char *file_A = estrdup(argv[2]);
     char *file_B = estrdup(argv[3]);
     char *file_C = estrdup(argv[4]);
-    /* -------------- Using openMP -------------- */
+
+    if (IMPL_TYPE == 0) {
+        /* -------------- Using PThreads -------------- */
+        MatrixArray mtxArr_A = new_matrixArray(file_A);
+        MatrixArray mtxArr_B = new_matrixArray(file_B);
+        MatrixArray mtxArr_C = new_matrixArray_clean(mtxArr_A->n, mtxArr_B->m);
+
+        dtime = omp_get_wtime();
+        matmul_pt(mtxArr_A, mtxArr_B, mtxArr_C);
+        dtime = omp_get_wtime() - dtime;
+
+        printf("%ld;%ld;%f\n", mtxArr_A->n, mtxArr_B->n, dtime);
+
+        //write_matrixArray(mtxArr_C, file_C);
+
+        destroy_matrixArray(mtxArr_A);
+        destroy_matrixArray(mtxArr_B);
+        destroy_matrixArray(mtxArr_C);
+
+        free(file_A);
+        free(file_B);
+        free(file_C);
+
+        return 0;
+    }
+    if (IMPL_TYPE == 1) {
+        /* -------------- Using OpenMP -------------- */
+        MatrixArray mtxArr_A = new_matrixArray(file_A);
+        MatrixArray mtxArr_B = new_matrixArray(file_B);
+        MatrixArray mtxArr_C = new_matrixArray_clean(mtxArr_A->n, mtxArr_B->m);
+
+        dtime = omp_get_wtime();
+        matmul_omp(mtxArr_A, mtxArr_B, mtxArr_C);
+        dtime = omp_get_wtime() - dtime;
+
+        printf("Elapsed: %f\n", dtime);
+
+        //write_matrixArray(mtxArr_C, file_C);
+
+        destroy_matrixArray(mtxArr_A);
+        destroy_matrixArray(mtxArr_B);
+        destroy_matrixArray(mtxArr_C);
+
+        free(file_A);
+        free(file_B);
+        free(file_C);
+
+        return 0;
+    }
+
+    /* -------------- Using OpenMP -------------- */
     MatrixArray mtxArr_A = new_matrixArray(file_A);
     MatrixArray mtxArr_B = new_matrixArray(file_B);
     MatrixArray refMtxArr_C = new_matrixArray_clean(mtxArr_A->n, mtxArr_B->m);
@@ -52,15 +104,16 @@ int main(int argc, char const *argv[]) {
 
     // exit(1);
 
-    printf("\n --- Parallel matmul (pt) ---\n");
+    /* -------------- Using PThreads -------------- */
     MatrixArray mtxArr_C = new_matrixArray_clean(mtxArr_A->n, mtxArr_B->m);
 
     dtime = omp_get_wtime();
     //matmul_omp_2(mtx_A, mtx_B, mtx_C);
-    matmul_omp2(mtxArr_A, mtxArr_B, mtxArr_C);
-    //matmul_pt(mtxArr_A, mtxArr_B, mtxArr_C);
+    //matmul_omp2(mtxArr_A, mtxArr_B, mtxArr_C);
+    matmul_pt(mtxArr_A, mtxArr_B, mtxArr_C);
     dtime = omp_get_wtime() - dtime;
 
+    printf("\n --- Parallel matmul (pt) ---\n");
     //print_matrixArray(mtxArr_C);
     printf("Elapsed: %f\n", dtime);
 
@@ -69,10 +122,13 @@ int main(int argc, char const *argv[]) {
     else
         printf("LIXOOOOOOOOOOO\n");
 
+    destroy_matrixArray(mtxArr_A);
+    destroy_matrixArray(mtxArr_B);
+    destroy_matrixArray(mtxArr_C);
+
     // exit(1);
 
-    printf("\n --- Seq matmul ---\n");
-
+    /* -------------- Using Sequential -------------- */
     Matrix mtx_A = new_matrix(file_A);
     Matrix mtx_B = new_matrix(file_B);
     Matrix mtx_C = new_matrix_clean(mtx_A->n, mtx_B->m);
@@ -82,6 +138,7 @@ int main(int argc, char const *argv[]) {
     //matmul_trashy(mtx_A, mtx_B, mtx_C);
     dtime = omp_get_wtime() - dtime;
 
+    printf("\n --- Seq matmul ---\n");
     //print_matrix(mtx_C);
     printf("Elapsed: %f\n", dtime);
 
@@ -92,9 +149,6 @@ int main(int argc, char const *argv[]) {
 
     //exit(1);
 
-    destroy_matrixArray(mtxArr_A);
-    destroy_matrixArray(mtxArr_B);
-    destroy_matrixArray(mtxArr_C);
     destroy_matrixArray(refMtxArr_C);
 
     destroy_matrix(mtx_A);
@@ -102,6 +156,10 @@ int main(int argc, char const *argv[]) {
     destroy_matrix(mtx_C);
 
     //exit(1);
+
+    free(file_A);
+    free(file_B);
+    free(file_C);
 
     //write_matrix(mtx_C, file_C);
     return 0;
