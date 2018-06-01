@@ -7,15 +7,6 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <stdlib.h>
-// for (i = 0; i < a_n; i++) {
-//      //printf("Thread #%lu is doing row %lu.\n",th_id,i);
-//     for (j = 0; j < b_m; j++) {
-//         double dot = 0;
-//         for (k = 0; k < a_m; k++)
-//             dot += a[i*a_m + k]*b[k*b_m + j];
-//         c[i*c_m + j] = dot;
-//     }
-// }
 
 
 void mmo_omp(MatrixArray A, MatrixArray B, MatrixArray C) {

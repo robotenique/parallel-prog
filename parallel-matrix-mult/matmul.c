@@ -45,7 +45,7 @@ int main(int argc, char const *argv[]) {
 
         printf("%ld;%ld;%f\n", mtxArr_A->n, mtxArr_B->n, dtime);
 
-        //write_matrixArray(mtxArr_C, file_C);
+        write_matrixArray(mtxArr_C, file_C);
 
         destroy_matrixArray(mtxArr_A);
         destroy_matrixArray(mtxArr_B);
@@ -67,9 +67,9 @@ int main(int argc, char const *argv[]) {
         matmul_omp(mtxArr_A, mtxArr_B, mtxArr_C);
         dtime = omp_get_wtime() - dtime;
 
-        printf("Elapsed: %f\n", dtime);
+        printf("%ld;%ld;%f\n", mtxArr_A->n, mtxArr_B->n, dtime);
 
-        //write_matrixArray(mtxArr_C, file_C);
+        write_matrixArray(mtxArr_C, file_C);
 
         destroy_matrixArray(mtxArr_A);
         destroy_matrixArray(mtxArr_B);
@@ -94,8 +94,6 @@ int main(int argc, char const *argv[]) {
 
     dtime = omp_get_wtime();
     matmul_omp(mtxArr_A, mtxArr_B, refMtxArr_C);
-    //matmul_pt2(mtxArr_A, mtxArr_B, refMtxArr_C);
-    //matcoisa(mtxArr_A, mtxArr_B, mtxArr_C);
     dtime = omp_get_wtime() - dtime;
 
     printf("\n --- Parallel matmul (omp) ---\n");
@@ -135,7 +133,6 @@ int main(int argc, char const *argv[]) {
 
     dtime = omp_get_wtime();
     matmul_seq(mtx_A, mtx_B, mtx_C);
-    //matmul_trashy(mtx_A, mtx_B, mtx_C);
     dtime = omp_get_wtime() - dtime;
 
     printf("\n --- Seq matmul ---\n");
