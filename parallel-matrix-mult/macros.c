@@ -14,95 +14,6 @@
 #include "macros.h"
 #include "error.h"
 
-uint64_t ceil64(uint64_t num, uint64_t den) {
-    if (!num) return 0;
-    return (num-1)/den + 1;
-}
-
-uint64_t ceilDiff(uint64_t coef, uint64_t num, uint64_t den) {
-    return ceil64((coef+1)*num, den) - ceil64(coef*num, den);
-}
-
-Matrix new_matrix(char* filename) {
-    FILE * fp;
-    char * line = NULL;
-    size_t len = 0;
-    char * pch;
-    size_t read;
-
-    uint64_t curr_i, curr_j;
-
-    Matrix mtx = (Matrix)emalloc(sizeof(mat));
-
-    fp = efopen(filename, "r");
-    uint64_t lnum = 0;
-    while ((read = getline(&line, &len, fp)) != -1) {
-        if(lnum == 0){
-            pch = strtok (line," ");
-            mtx->n = (uint64_t)atoi(pch);
-            pch = strtok (NULL, " ");
-            mtx->m = (uint64_t)atoi(pch);
-            mtx->matrix = emalloc(mtx->n*sizeof(double*));
-            for (uint64_t i = 0; i < mtx->n; i++) {
-                mtx->matrix[i] = calloc(mtx->m, sizeof(double));
-                if (mtx->matrix[i] == NULL)
-                    die("Failed to allocate memory");
-            }
-        }
-        else{
-            pch = strtok (line," ");
-            curr_i = (uint64_t)atoi(pch);
-            pch = strtok (NULL, " ");
-            curr_j = (uint64_t)atoi(pch);
-            pch = strtok (NULL, " ");
-            mtx->matrix[curr_i - 1][curr_j - 1] = atof(pch);
-        }
-        lnum++;
-    }
-
-    fclose(fp);
-    if (line)
-        free(line);
-    return mtx;
-}
-
-Matrix new_matrix_clean(uint64_t n, uint64_t m) {
-    Matrix mtx = (Matrix)emalloc(sizeof(mat));
-    mtx->matrix = emalloc(n*sizeof(double*));
-    for (uint64_t i = 0; i < n; i++) {
-        mtx->matrix[i] = calloc(m, sizeof(double));
-        if (mtx->matrix[i] == NULL)
-            die("Failed to allocate memory");
-    }
-    mtx->n = n;
-    mtx->m = m;
-    return mtx;
-}
-
-void write_matrix(Matrix mtx, char* filename){
-    FILE *fp = efopen(filename, "w");
-    fprintf(fp, "%lu %lu\n", mtx->n, mtx->m);
-    for (uint64_t i = 0; i < mtx->n; i++)
-        for (uint64_t j = 0; j < mtx->m; j++)
-            if(mtx->matrix[i][j] != 0)
-                fprintf(fp, "%lu %lu %lf\n", i + 1, j + 1, mtx->matrix[i][j]);
-
-    fclose(fp);
-}
-
-void reset_matrix(Matrix mtx) {
-    for (uint64_t i = 0; i < mtx->n; i++)
-        for (uint64_t j = 0; j < mtx->m; j++)
-            mtx->matrix[i][j] = 0.0f;
-}
-
-void destroy_matrix(Matrix mtx) {
-    for (uint64_t i = 0; i < mtx->n; i++)
-        free(mtx->matrix[i]);
-    free(mtx->matrix);
-    free(mtx);
-}
-
 MatrixArray new_matrixArray(char* filename){
     FILE * fp;
     char * line = NULL;
@@ -185,6 +96,14 @@ Argument create_argument(double* A, double* B, double* C,
     return a;
 }
 
+uint64_t ceil64(uint64_t num, uint64_t den) {
+    if (!num) return 0;
+    return (num-1)/den + 1;
+}
+
+uint64_t ceilDiff(uint64_t coef, uint64_t num, uint64_t den) {
+    return ceil64((coef+1)*num, den) - ceil64(coef*num, den);
+}
 
 uint64_t getCacheSize() {
     return sysconf(_SC_LEVEL1_DCACHE_SIZE);

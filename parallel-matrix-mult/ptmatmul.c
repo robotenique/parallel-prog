@@ -51,7 +51,6 @@ void matmul_pt(MatrixArray A, MatrixArray B, MatrixArray C) {
     uint64_t r_bc = ceil64(size_bc, ceil64(cacheSize, MIN_SIZE));
     uint64_t i, j, k, diff_i, diff_j, diff_k, ini_i, ini_j, ini_k;
     pthread_t *t;
-    //printf("Num threads: %ld\n", r_ar*r_bc);
     t = emalloc(r_ar*r_bc*sizeof(pthread_t));
     for (i = 0, ini_i = 0; i < r_ac; i++) {
         diff_i = ceilDiff(i, size_ac, r_ac);

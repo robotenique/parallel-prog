@@ -12,7 +12,7 @@ LDFLAGS = -lrt -lm -fopenmp -pthread -funroll-loops
 all: main
 
 
-main: matmul.o error.o macros.o seqmatmul.o openmpmatmul.o ptmatmul.o
+main: matmul.o error.o macros.o openmpmatmul.o ptmatmul.o
 	$(CC) -o $@ $^ $(LDFLAGS) $(CLFLAGS)
 
 %.o: %.c %.h

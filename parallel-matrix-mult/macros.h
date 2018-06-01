@@ -31,12 +31,6 @@ typedef unsigned int u_int;
 
 typedef unsigned long long int u_lint;
 
-typedef struct mat_t{
-    double **matrix;
-    uint64_t n;
-    uint64_t m;
-} mat;
-
 typedef struct mat_c_t{
     double *m_c;
     uint64_t n;
@@ -51,24 +45,12 @@ typedef struct targ_t {
     uint64_t size_ar, size_ac, size_bc, min_size, num_threads;
 } targ;
 
-typedef mat* Matrix;
-
 typedef mat_c* MatrixArray;
 
 typedef targ* Argument;
 
-/* Functions */
-MatrixArray new_matrixArray(char* filename);
-MatrixArray new_matrixArray_clean(uint64_t n, uint64_t m);
-void destroy_matrixArray(MatrixArray mtxArr);
-void write_matrixArray(MatrixArray mtxArr, char* filename);
-void reset_matrixArray(MatrixArray mtxArr);
-
-uint64_t ceil64(uint64_t num, uint64_t den);
-uint64_t ceilDiff(uint64_t coef, uint64_t num, uint64_t den);
-
 /*
- * Function: new_matrix
+ * Function: new_matrixArray
  * --------------------------------------------------------
  * Creates a new matrix given the filename of the matrix
  *
@@ -76,10 +58,10 @@ uint64_t ceilDiff(uint64_t coef, uint64_t num, uint64_t den);
  *
  * @return  the new matrix created
  */
-Matrix new_matrix(char* filename);
+MatrixArray new_matrixArray(char* filename);
 
 /*
- * Function: new_matrix_clean
+ * Function: new_matrixArray_clean
  * --------------------------------------------------------
  * Creates a new matrix with dim (n x m) filled with zeros
  *
@@ -88,10 +70,10 @@ Matrix new_matrix(char* filename);
  *
  * @return  the new matrix created
  */
-Matrix new_matrix_clean(uint64_t n, uint64_t m);
+MatrixArray new_matrixArray_clean(uint64_t n, uint64_t m);
 
 /*
- * Function: destroy_matrix
+ * Function: destroy_matrixArray
  * --------------------------------------------------------
  * Free the specified matrix
  *
@@ -99,30 +81,30 @@ Matrix new_matrix_clean(uint64_t n, uint64_t m);
  *
  * @return
  */
-void destroy_matrix(Matrix mtx);
+void destroy_matrixArray(MatrixArray mtxArr);
 
 /*
- * Function: write_matrix
+ * Function: write_matrixArray
  * --------------------------------------------------------
  * Writes out the matrix in the format specified in a file
  *
- * @args  mtx :  the Matrix
+ * @args  mtx :  the matrix
  *        filename: the name of the file
  *
  * @return
  */
-void write_matrix(Matrix mtx, char* filename);
+void write_matrixArray(MatrixArray mtxArr, char* filename);
 
 /*
- * Function: reset_matrix
+ * Function: reset_matrixArray
  * --------------------------------------------------------
  * Set all the entries in the matrix to zero
  *
- * @args  mtx :  the Matrix
+ * @args  mtx :  the matrix
  *
  * @return
  */
-void reset_matrix(Matrix mtx);
+void reset_matrixArray(MatrixArray mtxArr);
 
 /*
  * Function: create_argument
@@ -147,7 +129,41 @@ Argument create_argument(double* A, double* B, double* C,
                          uint64_t or_size_ac, uint64_t or_size_bc,
                          uint64_t num_threads);
 
+ /*
+  * Function: ceil64
+  * --------------------------------------------------------
+  * Divide two uint64_t and return the ceil of the result
+  *
+  * @args  num : the numerator
+  *        den : the denominator
+  *
+  * @return the ceil of num divided by den
+  */
+uint64_t ceil64(uint64_t num, uint64_t den);
 
+/*
+ * Function: ceilDiff
+ * --------------------------------------------------------
+ * Calculate the difference between ceil((coef+1)*num/den)
+ * and ceil(coef*num/den)
+ *
+ * @args  coef : the coefficient
+ *        num : the numerator
+ *        den : the denominator
+ *
+ * @return ceil((coef+1)*num/den) - ceil(coef*num/den)
+ */
+uint64_t ceilDiff(uint64_t coef, uint64_t num, uint64_t den);
+
+/*
+ * Function: getCacheSize
+ * --------------------------------------------------------
+ * Return the size of the L1 cache
+ *
+ * @args
+ *
+ * @return the cache size
+ */
 uint64_t getCacheSize();
 
 #endif
