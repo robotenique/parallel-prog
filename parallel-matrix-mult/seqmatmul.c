@@ -1,3 +1,11 @@
+/*
+ * @author: João Gabriel Basi Nº USP: 9793801
+ * @author: Juliano Garcia de Oliveira Nº USP: 9277086
+ *
+ * MAC0219
+ *
+ * Some functions for sequential matrix multiplication
+ */
 #include <stdio.h>
 #include <inttypes.h>
 #include <stdlib.h>

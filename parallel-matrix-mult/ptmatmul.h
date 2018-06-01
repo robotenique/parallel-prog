@@ -3,7 +3,6 @@
  * @author: Juliano Garcia de Oliveira Nº USP: 9277086
  *
  * MAC0219
- * 26/03/19
  *
  * Some functions for parallel matrix multiplication using pthreads
  */

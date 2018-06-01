@@ -147,16 +147,6 @@ Argument create_argument(double* A, double* B, double* C,
                          uint64_t or_size_ac, uint64_t or_size_bc,
                          uint64_t num_threads);
 
-/* TODO: REMOVE THIS, DEBUGGER */
-void print_matrix(Matrix mtx);
-
-void print_matrixArray(MatrixArray mtxArr);
-
-bool are_equal_ma2m(MatrixArray ma, Matrix m);
-
-bool are_equal_ma2ma(MatrixArray ma, MatrixArray m);
-
-void print_num_threads();
 
 uint64_t getCacheSize();
 

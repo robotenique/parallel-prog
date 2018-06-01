@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <inttypes.h>
-#include <unistd.h> // TODO: Remove this header
 #include "macros.h"
 #include "error.h"
 
@@ -128,15 +128,11 @@ MatrixArray new_matrixArray(char* filename){
         }
         else{
             pch = strtok (line," ");
-            // printf("PCH %s  ", pch);
             curr_i = (uint64_t)atoi(pch);
             pch = strtok (NULL, " ");
-            // printf("PCH %s  ", pch);
             curr_j = (uint64_t)atoi(pch);
             pch = strtok (NULL, " ");
-            // printf("PCH %s  ", pch);
             mtx->m_c[(curr_i - 1)*mtx->m + (curr_j - 1)] = atof(pch);
-            // printf("TERMINEI!\n");
         }
         lnum++;
     }
@@ -189,58 +185,6 @@ Argument create_argument(double* A, double* B, double* C,
     return a;
 }
 
-void print_matrix(Matrix mtx) {
-    printf("\n");
-    for (uint64_t i = 0; i < mtx->n; i++) {
-        for (uint64_t j = 0; j < mtx->m - 1; j++) {
-            printf("%lf ", mtx->matrix[i][j]);
-        }
-        printf("%lf\n", mtx->matrix[i][mtx->m - 1]);
-    }
-}
-
-void print_matrixArray(MatrixArray mtxArr) {
-    printf("\n");
-    for (uint64_t i = 0; i < mtxArr->n; i++) {
-        for (uint64_t j = 0; j < mtxArr->m - 1; j++) {
-            printf("%lf ", mtxArr->m_c[i*mtxArr->m + j]);
-        }
-        printf("%lf\n", mtxArr->m_c[i*mtxArr->m + (mtxArr->m - 1)]);
-    }
-}
-
-bool are_equal_ma2m(MatrixArray ma, Matrix m){
-    for (uint64_t i = 0; i < ma->n; i++)
-        for (uint64_t j = 0; j < ma->m; j++)
-            if(ma->m_c[i*ma->m + j] != m->matrix[i][j]){
-                printf("deu diferente %lu %lu , %lf , %lf\n",i, j,ma->m_c[i*ma->m + j], m->matrix[i][j]);
-                return false;
-            }
-
-    return true;
-}
-
-bool are_equal_ma2ma(MatrixArray ma, MatrixArray m){
-    for (uint64_t i = 0; i < ma->n; i++)
-        for (uint64_t j = 0; j < ma->m; j++)
-            if(ma->m_c[i*ma->m + j] != m->m_c[i*m->m + j]){
-                printf("deu diferente %lu %lu , %lf , %lf\n",i, j,ma->m_c[i*ma->m + j], m->m_c[i*m->m + j]);
-                return false;
-            }
-
-    return true;
-}
-
-void print_num_threads() {
-    char s[80];
-    sprintf(s, "cat /proc/%d/status | grep \"Threads\" | tr -d \"Threads:\"", getpid());
-    FILE *p = popen(s, "r");
-    int nt;
-    if (p != NULL) {
-        fscanf(p, "%d", &nt);
-        printf("%d\n", nt);
-    }
-}
 
 uint64_t getCacheSize() {
     return sysconf(_SC_LEVEL1_DCACHE_SIZE);
