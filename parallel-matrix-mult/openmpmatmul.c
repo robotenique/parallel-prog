@@ -17,65 +17,6 @@
 #include <stdlib.h>
 
 
-void mmo_omp(MatrixArray A, MatrixArray B, MatrixArray C) {
-    double *pA = A->m_c;
-    double *pB = B->m_c;
-    double *pC = C->m_c;
-    uint64_t size_ar = A->n;
-    uint64_t size_ac = A->m;
-    uint64_t size_bc = B->m;
-    uint64_t r_ar = ceil64(size_ar, MIN_SIZE);
-    uint64_t r_ac = ceil64(size_ac, MIN_SIZE);
-    uint64_t r_bc = ceil64(size_bc, MIN_SIZE);
-    uint64_t i, j, k, diff_i, diff_j, diff_k, ini_i, ini_j, ini_k;
-    ini_i = 0;
-    for (i = 0; i < r_ac; i++) {
-        diff_i = ceilDiff(i, size_ac, r_ac);
-        ini_k = 0;
-        for (k = 0; k < r_ar; k++) {
-            diff_k = ceilDiff(k, size_ar, r_ar);
-            ini_j = 0;
-            for (j = 0; j < r_bc; j++) {
-                diff_j = ceilDiff(j, size_bc, r_bc);
-                double* A_inner = pA + ini_k*size_ac + ini_i;
-                double* B_inner = pB + ini_i*size_bc + ini_j;
-                double* C_inner = pC + ini_k*size_bc + ini_j;
-                // double *pB_inner, *pC_inner;
-                uint64_t a_idx = 0;
-                uint64_t b_idx = 0;
-                uint64_t c_idx = 0;
-                uint64_t size_ac_inner = diff_i;
-                uint64_t size_ar_inner = diff_k;
-                uint64_t size_bc_inner = diff_j;
-                uint64_t or_size_ac = size_ac;
-                uint64_t or_size_bc = size_bc;
-                uint64_t i_inner, j_inner, k_inner;
-                double r_inner; /* Tirar isso daqui!*/
-                for (i_inner = 0; i_inner < size_ar_inner; i_inner++) {
-                    for (k_inner = 0; k_inner < size_ac_inner; k_inner++) {
-                        r_inner = A_inner[a_idx++];
-                        b_idx = k_inner*or_size_bc;
-                        c_idx = i_inner*or_size_bc;
-                        for (j_inner = 0; j_inner < size_bc_inner; j_inner++)
-                            C_inner[c_idx++] += r_inner*B_inner[b_idx++];
-                    }
-                    a_idx += or_size_ac - size_ac_inner;
-                }
-
-                ini_j += diff_j;
-            }
-            ini_k += diff_k;
-        }
-
-        ini_i += diff_i;
-    }
-
-}
-
-void matmul_omp2(MatrixArray A, MatrixArray B, MatrixArray C){
-    mmo_omp(A, B, C);
-}
-
 void matmul_omp(MatrixArray A, MatrixArray B, MatrixArray C){
     uint64_t a_n = A->n;
     uint64_t a_m = A->m;
