@@ -31,7 +31,8 @@ int main(void){
     a = (int *)malloc(size); fill_array(a, N, 0);
     b = (int *)malloc(size); fill_array(b, N, 1);
     c = (int *)malloc(size);
-
+    print_arr(a, N);
+    print_arr(b, N);
     // Copy input to device
     cudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
     cudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
