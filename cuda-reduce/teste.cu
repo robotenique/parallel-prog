@@ -14,7 +14,7 @@ void fill_array(int *arr, int N, int val) {
 
 void print_arr(int *arr, int N){
     for(int i = 0; i < N; i++){
-        cout << arr[i] << "";
+        cout << arr[i] << " ";
         if(i % 40 == 0)
             cout << endl;
     }
@@ -31,8 +31,8 @@ int main(void){
     cudaMalloc((void **)&d_c, size);
 
     // Allocate for host copies of a, b, c, and setup input values
-    a = (int *)malloc(size); fill_array(a, N, 0);
-    b = (int *)malloc(size); fill_array(b, N, 1);
+    a = (int *)malloc(size); fill_array(a, N, 20);
+    b = (int *)malloc(size); fill_array(b, N, -15);
     c = (int *)malloc(size);
 
     // Copy input to device
