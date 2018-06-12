@@ -7,7 +7,7 @@ using namespace std;
 __global__ void add(int *a, int *b, int *c) {
     c[blockIdx.x] = a[blockIdx.x] + b[blockIdx.x];
 }
-void fill_array(int *arr, int N, int val = 0) {
+void fill_array(int *arr, int N, int val) {
     for(int i = 0; i < N; i++){
         arr[i] = val;
     }
@@ -29,7 +29,7 @@ int main(void){
     cudaMalloc((void **)&d_c, size);
 
     // Allocate for host copies of a, b, c, and setup input values
-    a = (int *)malloc(size); fill_array(a, N);
+    a = (int *)malloc(size); fill_array(a, N, 0);
     b = (int *)malloc(size); fill_array(b, N, 1);
     c = (int *)malloc(size);
 
