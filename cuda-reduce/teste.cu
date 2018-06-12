@@ -1,8 +1,8 @@
 #include <cstdio>
 #include <iostream>
-#define N 512
 using namespace std;
 
+int N = 512;
 
 __global__ void add(int *a, int *b, int *c) {
     c[blockIdx.x] = a[blockIdx.x] + b[blockIdx.x];
