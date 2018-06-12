@@ -14,7 +14,9 @@ void fill_array(int *arr, int N, int val) {
 
 void print_arr(int *arr, int N){
     for(int i = 0; i < N; i++)
-        cout << arr[i] << "\n";
+        cout << arr[i] << "";
+        if(i % 40 == 0)
+            cout << endl;
 }
 
 int main(void){
@@ -31,8 +33,7 @@ int main(void){
     a = (int *)malloc(size); fill_array(a, N, 0);
     b = (int *)malloc(size); fill_array(b, N, 1);
     c = (int *)malloc(size);
-    print_arr(a, N);
-    print_arr(b, N);
+
     // Copy input to device
     cudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
     cudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
