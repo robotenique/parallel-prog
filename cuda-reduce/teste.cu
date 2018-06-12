@@ -13,10 +13,11 @@ void fill_array(int *arr, int N, int val) {
 }
 
 void print_arr(int *arr, int N){
-    for(int i = 0; i < N; i++)
+    for(int i = 0; i < N; i++){
         cout << arr[i] << "";
         if(i % 40 == 0)
             cout << endl;
+    }
 }
 
 int main(void){
