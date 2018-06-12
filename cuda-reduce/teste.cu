@@ -19,7 +19,7 @@ void print_arr(int *arr, int N){
 }
 
 int main(void){
-    int a, b, c; // host copies of a, b, c
+    int *a, *b, *c; // host copies of a, b, c
     int *d_a, *d_b, *d_c; // device copies of a, b, c
     int size = N*sizeof(int);
 
