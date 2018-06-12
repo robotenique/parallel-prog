@@ -8,7 +8,9 @@ __global__ void add(int *a, int *b, int *c) {
     c[blockIdx.x] = a[blockIdx.x] + b[blockIdx.x];
 }
 void fill_array(int *arr, int N, int val = 0) {
-    for(int i = 0; i < N; arr[i++] = val);
+    for(int i = 0; i < N; i++){
+        arr[i] = val;
+    }
 }
 
 void print_arr(int *arr, int N){
