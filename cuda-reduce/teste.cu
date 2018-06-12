@@ -7,10 +7,10 @@ using namespace std;
 __global__ void add(int *a, int *b, int *c) {
     c[blockIdx.x] = a[blockIdx.x] + b[blockIdx.x];
 }
+
 void fill_array(int *arr, int N, int val) {
-    for(int i = 0; i < N; i++){
+    for(int i = 0; i < N; i++)
         arr[i] = val;
-    }
 }
 
 void print_arr(int *arr, int N){
@@ -42,11 +42,11 @@ int main(void){
 
     // Copy result back to host
     cudaMemcpy(c, d_c, size, cudaMemcpyDeviceToHost);
-    
+
     print_arr(c, N);
     // Cleanup
     free(a); free(b); free(c);
     cudaFree(d_a); cudaFree(d_b); cudaFree(d_c);
-    
+
     return 0;
 }
