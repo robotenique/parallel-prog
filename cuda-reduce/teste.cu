@@ -7,9 +7,15 @@ using namespace std;
 __global__ void add(int *a, int *b, int *c) {
     c[blockIdx.x] = a[blockIdx.x] + b[blockIdx.x];
 }
-void fill_array(int arr, int N, int val = 0) {
+void fill_array(int *arr, int N, int val = 0) {
     for(int i = 0; i < N; arr[i++] = val);
 }
+
+void print_arr(int *arr, int N){
+    for(int i = 0; i < N; i++)
+        cout << arr[i] << "\n";
+}
+
 int main(void){
     int a, b, c; // host copies of a, b, c
     int *d_a, *d_b, *d_c; // device copies of a, b, c
@@ -25,12 +31,6 @@ int main(void){
     b = (int *)malloc(size); fill_array(b, N, 1);
     c = (int *)malloc(size);
 
-
-
-    // Setup input values
-    a = 2;
-    b = 7;
-
     // Copy input to device
     cudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
     cudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
@@ -40,10 +40,11 @@ int main(void){
 
     // Copy result back to host
     cudaMemcpy(c, d_c, size, cudaMemcpyDeviceToHost);
-
+    
+    print_arr(c, N);
     // Cleanup
     free(a); free(b); free(c);
     cudaFree(d_a); cudaFree(d_b); cudaFree(d_c);
-    cout << "The value of C is: " << c << ".\n";
+    
     return 0;
 }
