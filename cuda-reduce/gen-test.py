@@ -15,10 +15,11 @@ def main():
         return
     num_mat = int(sys.argv[1])
     dest = sys.argv[2]
+    r = 9
     f = open(dest, "w")
     f.write(f"{num_mat}\n***\n")
     for i in range(num_mat):
-        f.write(mat2str(np.random.randint(10, size=(3,3))))
+        f.write(mat2str(np.random.randint(r, size=(3,3)) - r//2))
         f.write("***\n")
     f.close()
 
