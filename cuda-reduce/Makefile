@@ -13,9 +13,15 @@ teste: teste.o
 %.o: %.cu %.h
 	$(CC) $(CFLAGS) -c $< $(LDFLAGS) $(CLFLAGS) -o $@
 
-
 %.o: %.cu
 	$(CC) $(CFLAGS) -c $< $(LDFLAGS) $(CLFLAGS) -o $@
+
+%.o: %.cpp %.h
+	$(CC) $(CFLAGS) -c $< $(LDFLAGS) $(CLFLAGS) -o $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< $(LDFLAGS) $(CLFLAGS) -o $@
+
 #DEVICE_ID = 0
 #sizeV=262144
 #sizeM=2048
