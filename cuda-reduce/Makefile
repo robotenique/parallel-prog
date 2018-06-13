@@ -9,13 +9,13 @@ all: reduce main
 clean:
 	rm -f *.o *~ *.out teste main
 
-main: reduce.o error.o macros.o
-	$(NVCC) -o $@ $^ $(CLFLAGS)
+# main: reduce.o error.o macros.o
+# 	$(NVCC) -o $@ $^ $(CLFLAGS)
 
 teste: teste.o error.o cudaerror.o
 	$(NVCC) -o $@ $^ $(CLFLAGS)
 
-main: main.o error.o
+main: main.o error.o macros.o
 	$(CC) -o $@ $^ $(CLFLAGS)
 
 %.o: %.cu %.h
