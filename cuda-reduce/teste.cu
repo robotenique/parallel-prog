@@ -1,10 +1,15 @@
 #include <cstdio>
 #include <iostream>
+#include "error.h"
+#include "cudaerror.h"
 using namespace std;
-const int N = 512;
+const int N = 16384; // Num blocks
+const int M = 128; // Num threads per block
 
 __global__ void add(int *a, int *b, int *c) {
-    c[blockIdx.x] = a[blockIdx.x] + b[blockIdx.x];
+    int index = blockIdx.x*M + threadIdx.x;
+    if (index < N)
+        c[index] = a[index] + b[index];
 }
 
 void fill_array(int *arr, int N, int val) {
@@ -15,9 +20,10 @@ void fill_array(int *arr, int N, int val) {
 void print_arr(int *arr, int N){
     for(int i = 0; i < N; i++){
         cout << arr[i] << " ";
-        if(i % 40 == 0)
+        if(i % 45 == 44)
             cout << endl;
     }
+    cout << endl;
 }
 
 int main(void){
@@ -26,29 +32,29 @@ int main(void){
     int size = N*sizeof(int);
 
     // Allocate space for device copies of a, b, c
-    cudaMalloc((void **)&d_a, size);
-    cudaMalloc((void **)&d_b, size);
-    cudaMalloc((void **)&d_c, size);
+    ecudaMalloc((void **)&d_a, size);
+    ecudaMalloc((void **)&d_b, size);
+    ecudaMalloc((void **)&d_c, size);
 
     // Allocate for host copies of a, b, c, and setup input values
-    a = (int *)malloc(size); fill_array(a, N, 20);
-    b = (int *)malloc(size); fill_array(b, N, -15);
-    c = (int *)malloc(size);
+    a = (int *)emalloc(size); fill_array(a, N, 20);
+    b = (int *)emalloc(size); fill_array(b, N, -15);
+    c = (int *)emalloc(size);
 
     // Copy input to device
-    cudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
+    ecudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
+    ecudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
 
     // Launch add() kernel on GPU
-    add<<<N, 1>>>(d_a, d_b, d_c);
+    add<<<N/M, M>>>(d_a, d_b, d_c);
 
     // Copy result back to host
-    cudaMemcpy(c, d_c, size, cudaMemcpyDeviceToHost);
+    ecudaMemcpy(c, d_c, size, cudaMemcpyDeviceToHost);
 
     print_arr(c, N);
     // Cleanup
     free(a); free(b); free(c);
-    cudaFree(d_a); cudaFree(d_b); cudaFree(d_c);
+    ecudaFree(d_a); ecudaFree(d_b); ecudaFree(d_c);
 
     return 0;
 }
