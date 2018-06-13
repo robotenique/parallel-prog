@@ -4,12 +4,12 @@ CFLAGS = -lm -O2 -w
 LDFLAGS = ""
 .PHONY: clean
 
-all: reduce
+all: main
 
 clean:
-	rm -f *.o *~ *.out teste
+	rm -f *.o *~ *.out teste main
 
-reduce: reduce.o error.o cudaerror.o
+main: reduce.o error.o macros.o
 	$(NVCC) -o $@ $^ $(CLFLAGS)
 
 teste: teste.o error.o cudaerror.o
