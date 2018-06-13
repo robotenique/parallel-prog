@@ -26,6 +26,10 @@ teste: teste.o error.o cudaerror.o
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) -c $< $(CLFLAGS) -o $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< $(CLFLAGS) -o $@
+
 #DEVICE_ID = 0
 #sizeV=262144
 #sizeM=2048
