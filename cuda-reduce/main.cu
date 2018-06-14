@@ -16,9 +16,9 @@ __global__ void reduce_min( int32_t *mats, int32_t N ) {
     __syncthreads();
 
     for (int32_t i = blockDim.x/2; i != 0; i >>= 1) {
-        if (cid < i) {
+        if (threadIdx.x < i) {
             for (int32_t j = 0; j < 9; j++)
-                cache[cid] = cache[cid + j] + ((cache[cid + i + j]-cache[cid + j])&((cache[cid + i + j]-cache[cid + j]) >> 31));
+                cache[threadIdx.x] = cache[threadIdx.x + j] + ((cache[threadIdx.x + i + j]-cache[threadIdx.x + j])&((cache[threadIdx.x + i + j]-cache[threadIdx.x + j]) >> 31));
         }
         __syncthreads();
     }
