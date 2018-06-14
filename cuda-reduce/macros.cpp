@@ -18,7 +18,7 @@ int32_t new_matrix_from_file(string filename, int32_t** dest) {
     cin >> n;
     cin >> dummy;
     round_n = n + NUM_THREADS - n%NUM_THREADS;
-    *dest = new int32_t[9*n];
+    *dest = new int32_t[9*round_n];
     int32_t* arr = *dest;
 
     for (i = 0; i < 9*n; i += 9) {

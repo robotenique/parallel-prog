@@ -1,19 +1,22 @@
 NVCC = nvcc
 CC = g++
-CFLAGS = -lm -O2 -w
-LDFLAGS = ""
+CFLAGS = -lm -g -w
+#LDFLAGS = ""
 .PHONY: clean
 
 all: main
 
 clean:
-	rm -f *.o *~ *.out teste main
+	rm -f *.o *~ *.out teste main coisa_pq_nao_tenho_nvcc_no_meu_pc
 
 teste: teste.o error.o cudaerror.o
 	$(NVCC) -o $@ $^ $(CLFLAGS)
 
 main: main.o error.o cudaerror.o macros.o
 	$(NVCC) -o $@ $^ $(CLFLAGS)
+
+coisa_pq_nao_tenho_nvcc_no_meu_pc: coisa_pq_nao_tenho_nvcc_no_meu_pc.o error.o macros.o
+	$(CC) -o $@ $^  $(CLFLAGS)
 
 %.o: %.cu %.h
 	$(NVCC) $(CFLAGS) -c $< $(CLFLAGS)
