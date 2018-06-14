@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <limits>
 #include "macros.h"
 #include "error.h"
 
@@ -12,23 +13,27 @@ int32_t new_matrix_from_file(string filename, int32_t** dest) {
     ifstream in(filename);
     streambuf *cinbuf = cin.rdbuf(in.rdbuf()); // set cin buffer to 'filename' content
     string dummy;
-    int32_t n;
+    int32_t n, round_n, i;
 
     cin >> n;
     cin >> dummy;
+    round_n = n + NUM_THREADS - n%NUM_THREADS;
     *dest = new int32_t[9*n];
     int32_t* arr = *dest;
 
-    for (int i = 0; i < 9*n; i += 9) {
+    for (i = 0; i < 9*n; i += 9) {
         cin >> arr[i] >> arr[i+1] >> arr[i+2];
         cin >> arr[i+3] >> arr[i+4] >> arr[i+5];
         cin >> arr[i+6] >> arr[i+7] >> arr[i+8];
         cin >> dummy;
     }
 
+    for ( ; i < 9*round_n; i++)
+        arr[i] = numeric_limits<int32_t>::max();
+
     cin.rdbuf(cinbuf); // set cin buffer back to stdin
 
-    return n;
+    return round_n;
 }
 
 int32_t minT(int32_t a, int32_t b) {

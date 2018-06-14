@@ -12,8 +12,8 @@ clean:
 teste: teste.o error.o cudaerror.o
 	$(NVCC) -o $@ $^ $(CLFLAGS)
 
-main: main.o error.o macros.o
-	$(CC) -o $@ $^ $(CLFLAGS)
+main: main.o error.o cudaerror.o macros.o
+	$(NVCC) -o $@ $^ $(CLFLAGS)
 
 %.o: %.cu %.h
 	$(NVCC) $(CFLAGS) -c $< $(CLFLAGS)
