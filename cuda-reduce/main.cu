@@ -6,7 +6,7 @@
 using namespace std;
 
 __global__ void reduce_min( int32_t *mats, int32_t N ) {
-    __shared__ int32_t cache[];
+    extern __shared__ int32_t cache[];
     int tid = 9*(threadIdx.x + blockIdx.x * blockDim.x);
     int cid = 9*threadIdx.x;
 
@@ -25,7 +25,7 @@ __global__ void reduce_min( int32_t *mats, int32_t N ) {
 
     if (cid == 0) {
         for (int32_t i = 0; i < 9; i++)
-            c[blockIdx.x + i] = cache[i];
+            cache[blockIdx.x + i] = cache[i];
     }
 }
 
@@ -44,7 +44,7 @@ int main(int argc, char const *argv[]) {
 
     delete[] list_m;
 
-    int32_t num_m = new_matrix_from_file(argv[1], &list_m);
+    num_m = new_matrix_from_file(argv[1], &list_m);
     ecudaMalloc((void **)&d_list_m, num_m);
     ecudaMemcpy(list_m, d_list_m, 9*num_m*sizeof(int32_t), cudaMemcpyHostToDevice);
 
