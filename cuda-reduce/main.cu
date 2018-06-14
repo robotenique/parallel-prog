@@ -22,7 +22,7 @@ __global__ void reduce_min( int32_t *mats, int32_t N ) {
     for (int32_t i = blockDim.x/2; i != 0; i >>= 1) {
         if (threadIdx.x < i) {
             for (int32_t j = 0; j < 9; j++)
-                cache[cid + j] = min_cuda(cache[cid + 9*i + j], cache[cid + j]);
+                cache[cid + j] = min(cache[cid + 9*i + j], cache[cid + j]);
         }
         __syncthreads();
     }
