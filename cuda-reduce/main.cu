@@ -53,10 +53,12 @@ int main(int argc, char const *argv[]) {
     cout << "---- COPIA 2 ----\n";
     ecudaMemcpy(cuda_result, d_list_m, 9*num_m*sizeof(int32_t), cudaMemcpyDeviceToHost);
     cout << "---- COPIA 2 {end} ----\n";
-    print_matrices(cuda_result, 1);
+    print_matrices(cuda_result, num_m);
 
     ecudaFree(d_list_m);
     delete[] list_m;
     delete[] mat_reduced;
+    delete[] coisa;
+    delete[] cuda_result;
     return 0;
 }
