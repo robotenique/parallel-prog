@@ -42,7 +42,7 @@ int main(int argc, char const *argv[]) {
     cout << "=======REDUCED (SEQ)=======" << '\n';
     print_matrices(mat_reduced, 1);
 
-    int32_t  *cuda_result = new int32_t[9];
+    int32_t  *cuda_result = new int32_t[9*num_m];
     ecudaMalloc((void **)&d_list_m, 9*num_m*sizeof(int32_t));
     cout << "---- COPIA 1 ----\n";
     int32_t *coisa;
@@ -51,7 +51,7 @@ int main(int argc, char const *argv[]) {
     cout << "---- COPIA 1 {end} ----\n";
     reduce_min<<<num_m/NUM_THREADS, NUM_THREADS, 9*NUM_THREADS>>>(d_list_m, num_m);
     cout << "---- COPIA 2 ----\n";
-    ecudaMemcpy(cuda_result,d_list_m, 9*sizeof(int32_t), cudaMemcpyDeviceToHost);
+    ecudaMemcpy(cuda_result,d_list_m, 9*num_m*sizeof(int32_t), cudaMemcpyDeviceToHost);
     cout << "---- COPIA 2 {end} ----\n";
     print_matrices(cuda_result, 1);
 
