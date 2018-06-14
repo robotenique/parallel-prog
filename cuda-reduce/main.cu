@@ -6,7 +6,7 @@
 using namespace std;
 
 __global__ void reduce_min( int32_t *mats, int32_t N ) {
-    __shared__ int32_t cache[];
+    extern __shared__ int32_t cache[];
     int tid = 9*(threadIdx.x + blockIdx.x * blockDim.x);
     int cid = 9*threadIdx.x;
 
@@ -18,14 +18,14 @@ __global__ void reduce_min( int32_t *mats, int32_t N ) {
     for (int32_t i = blockDim.x/2; i != 0; i >>= 1) {
         if (cid < i) {
             for (int32_t j = 0; j < 9; j++)
-                cache[cid] = minT(cache[cid + i + j], cache[cid + j]);
+                cache[cid] = cache[cid + j] + ((cache[cid + i + j]-cache[cid + j])&((cache[cid + i + j]-cache[cid + j]) >> 31));
         }
         __syncthreads();
     }
 
     if (cid == 0) {
         for (int32_t i = 0; i < 9; i++)
-            c[blockIdx.x + i] = cache[i];
+            mats[blockIdx.x + i] = cache[i];
     }
 }
 
@@ -45,13 +45,14 @@ int main(int argc, char const *argv[]) {
     delete[] list_m;
 
     int32_t num_m = new_matrix_from_file(argv[1], &list_m);
+    int32_t  *tester = new int32_t[9];
     ecudaMalloc((void **)&d_list_m, num_m);
     ecudaMemcpy(list_m, d_list_m, 9*num_m*sizeof(int32_t), cudaMemcpyHostToDevice);
 
     reduce_min<<<num_m/NUM_THREADS, NUM_THREADS, 9*NUM_THREADS>>>(d_list_m, num_m);
 
-    ecudaMemcpy(d_list_m, mat_reduced, 9*sizeof(int32_t), cudaMemcpyDeviceToHost);
-    print_matrices(mat_reduced, 1);
+    ecudaMemcpy(tester,d_list_m, 9*sizeof(int32_t), cudaMemcpyDeviceToHost);
+    print_matrices(tester, 1);
 
     ecudaFree(d_list_m);
     delete[] list_m;
