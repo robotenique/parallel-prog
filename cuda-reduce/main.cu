@@ -44,12 +44,8 @@ int main(int argc, char const *argv[]) {
 
     delete[] list_m;
 
-<<<<<<< HEAD
     int32_t num_m = new_matrix_from_file(argv[1], &list_m);
     int32_t  *tester = new int32_t[9];
-=======
-    num_m = new_matrix_from_file(argv[1], &list_m);
->>>>>>> 285fcd7b964395c22c8321413dd0345233c8cf22
     ecudaMalloc((void **)&d_list_m, num_m);
     ecudaMemcpy(list_m, d_list_m, 9*num_m*sizeof(int32_t), cudaMemcpyHostToDevice);
 
