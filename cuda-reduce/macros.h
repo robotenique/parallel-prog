@@ -4,7 +4,7 @@
 #include <cinttypes>
 #include <string>
 
-#define NUM_THREADS 3
+#define NUM_THREADS 32
 
 int32_t new_matrix_from_file(std::string filename, int32_t** dest);
 
