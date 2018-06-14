@@ -13,10 +13,9 @@ __global__ void reduce_min( int32_t *mats, int32_t N ) {
     int tid = 9*(threadIdx.x + blockIdx.x * blockDim.x);
     int cid = 9*threadIdx.x;
     for (int32_t i = 0; i < 9; i++) {
-        printf("Oi, colocando %d em %d...\n", tid+i, cid+i);
+        printf("Oi, colocando mats[%d] em cache[%d]...\n", tid+i, cid+i);
         cache[cid + i] = mats[tid + i];
     }
-
     __syncthreads();
 
     for (int32_t i = blockDim.x/2; i != 0; i >>= 1) {
@@ -53,7 +52,8 @@ int main(int argc, char const *argv[]) {
     new_matrix_from_file(argv[1], &coisa);
     ecudaMemcpy(d_list_m, coisa, 9*num_m*sizeof(int32_t), cudaMemcpyHostToDevice);
     cout << "---- COPIA 1 {end} ----\n";
-    reduce_min<<<num_m/NUM_THREADS, NUM_THREADS, 9*NUM_THREADS>>>(d_list_m, num_m);
+    cout << "Redução <" << num_m/NUM_THREADS << ", " << NUM_THREADS << ", " << 9*NUM_THREADS << ">\n";
+    reduce_min<<<num_m/NUM_THREADS, NUM_THREADS, 9*NUM_THREADS*sizeof(int32_t)>>>(d_list_m, num_m);
     cout << "---- COPIA 2 ----\n";
     ecudaMemcpy(cuda_result, d_list_m, 9*num_m*sizeof(int32_t), cudaMemcpyDeviceToHost);
     cout << "---- COPIA 2 {end} ----\n";
