@@ -45,7 +45,9 @@ int main(int argc, char const *argv[]) {
     int32_t  *tester = new int32_t[9];
     ecudaMalloc((void **)&d_list_m, num_m);
     cout << "---- COPIA 1 ----\n";
-    ecudaMemcpy(d_list_m, list_m, 9*num_m*sizeof(int32_t), cudaMemcpyHostToDevice);
+    int32_t *coisa;
+    new_matrix_from_file(argv[1], &coisa);
+    ecudaMemcpy(d_list_m, coisa, 9*num_m*sizeof(int32_t), cudaMemcpyHostToDevice);
     cout << "---- COPIA 1 {end} ----\n";
     reduce_min<<<num_m/NUM_THREADS, NUM_THREADS, 9*NUM_THREADS>>>(d_list_m, num_m);
     cout << "---- COPIA 2 ----\n";
