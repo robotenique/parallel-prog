@@ -36,7 +36,7 @@ int32_t new_matrix_from_file(string filename, int32_t** dest) {
     return round_n;
 }
 
-__host__ __device__ int32_t minT(int32_t a, int32_t b) {
+int32_t minT(int32_t a, int32_t b) {
     return b + ((a-b)&((a-b) >> 31));
 }
 

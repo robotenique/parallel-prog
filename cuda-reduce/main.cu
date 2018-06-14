@@ -5,6 +5,10 @@
 #include "cudaerror.h"
 using namespace std;
 
+__host__ __device__ int32_t min_cuda(int32_t a, int32_t b) {
+    return b + ((a-b)&((a-b) >> 31));
+}
+
 __global__ void reduce_min( int32_t *mats, int32_t N ) {
     extern __shared__ int32_t cache[];
     int tid = 9*(threadIdx.x + blockIdx.x * blockDim.x);
@@ -18,7 +22,7 @@ __global__ void reduce_min( int32_t *mats, int32_t N ) {
     for (int32_t i = blockDim.x/2; i != 0; i >>= 1) {
         if (cid < i) {
             for (int32_t j = 0; j < 9; j++)
-                cache[cid] = minT(cache[cid + i + j], cache[cid + j]);
+                cache[cid] = min_cuda(cache[cid + i + j], cache[cid + j]);
         }
         __syncthreads();
     }
