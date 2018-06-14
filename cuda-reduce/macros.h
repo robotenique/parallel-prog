@@ -8,7 +8,7 @@
 
 int32_t new_matrix_from_file(std::string filename, int32_t** dest);
 
-int32_t minT(int32_t a, int32_t b);
+__host__ __device__ int32_t minT(int32_t a, int32_t b);
 
 void reduce_matrices_seq(int32_t *list_m, int32_t num_m, int32_t **dest);
 
