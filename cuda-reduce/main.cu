@@ -51,9 +51,9 @@ int main(int argc, char const *argv[]) {
     cout << "---- COPIA 1 {end} ----\n";
     reduce_min<<<num_m/NUM_THREADS, NUM_THREADS, 9*NUM_THREADS>>>(d_list_m, num_m);
     cout << "---- COPIA 2 ----\n";
-    ecudaMemcpy(cuda_result,d_list_m, 9*num_m*sizeof(int32_t), cudaMemcpyDeviceToHost);
+    ecudaMemcpy(coisa, d_list_m, 9*num_m*sizeof(int32_t), cudaMemcpyDeviceToHost);
     cout << "---- COPIA 2 {end} ----\n";
-    print_matrices(cuda_result, 1);
+    print_matrices(coisa, 1);
 
     ecudaFree(d_list_m);
     delete[] list_m;
