@@ -5,9 +5,6 @@
 #include "cudaerror.h"
 using namespace std;
 
-__host__ __device__ int32_t min_cuda(int32_t a, int32_t b) {
-    return b + ((a-b)&((a-b) >> 31));
-}
 __global__ void reduce_min( int32_t *mats, int32_t N ) {
     extern __shared__ int32_t cache[];
     int tid = 9*(threadIdx.x + blockIdx.x * blockDim.x);
@@ -41,7 +38,7 @@ int main(int argc, char const *argv[]) {
     int32_t *list_m, *d_list_m, *mat_reduced;
     int32_t num_m = new_matrix_from_file(argv[1], &list_m);
 
-    print_matrices(list_m, num_m);
+    //print_matrices(list_m, num_m);
     reduce_matrices_seq(list_m, num_m, &mat_reduced);
     cout << "=======REDUCED (SEQ)=======" << '\n';
     print_matrices(mat_reduced, 1);
@@ -58,6 +55,10 @@ int main(int argc, char const *argv[]) {
     ecudaMemcpy(cuda_result, d_list_m, 9*sizeof(int32_t), cudaMemcpyDeviceToHost);
     cout << "---- COPIA 2 {end} ----\n";
     print_matrices(cuda_result, 1);
+    if(is_equal(mat_reduced, cuda_result))
+        cout << "SUCCESS!!\n";
+    else
+        cout << "YOU HAVE FAILED!!\n";
 
     ecudaFree(d_list_m);
     delete[] list_m;

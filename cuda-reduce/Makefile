@@ -1,6 +1,6 @@
 NVCC = nvcc
 CC = g++
-CFLAGS = -lm -g -w
+CFLAGS = -lm -O2 -w
 #LDFLAGS = ""
 .PHONY: clean
 

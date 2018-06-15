@@ -36,10 +36,6 @@ int32_t new_matrix_from_file(string filename, int32_t** dest) {
     return round_n;
 }
 
-int32_t minT(int32_t a, int32_t b) {
-    return b + ((a-b)&((a-b) >> 31));
-}
-
 void reduce_matrices_seq(int32_t *list_m, int32_t num_m, int32_t **dest){
     *dest = new int32_t[9];
     int32_t *arr = *dest;
@@ -48,9 +44,8 @@ void reduce_matrices_seq(int32_t *list_m, int32_t num_m, int32_t **dest){
     if (num_m == 9)
         return;
     for (size_t i = 9; i < 9*num_m; i++)
-        arr[i%9] = minT(arr[i%9], list_m[i]);
+        arr[i%9] = min(arr[i%9], list_m[i]);
 }
-
 
 void print_matrices(int32_t *list_m, int32_t num_m) {
     for (size_t i = 0; i < 9*num_m; i++) {
@@ -58,4 +53,11 @@ void print_matrices(int32_t *list_m, int32_t num_m) {
         if ((i + 1)%9 == 0)
             cout << endl;
     }
+}
+
+bool is_equal(int32_t *a, int32_t *b){
+    for (size_t i = 0; i < 9; i++)
+        if(a[i] != b[i])
+            return false;
+    return true;
 }
