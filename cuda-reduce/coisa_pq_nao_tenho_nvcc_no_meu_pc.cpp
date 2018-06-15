@@ -1,22 +1,11 @@
 #include <cstdio>
 #include <iostream>
-#include "macros.h"
-#include "error.h"
 using namespace std;
+int32_t min_coisa(int32_t a, int32_t b){
+    return (a - abs(a-b) + b)/2;
+}
 int main(int argc, char const *argv[]) {
-    set_prog_name("cuda-reduce");
-    if(argc < 2)
-        die("Wrong number of arguments!\nUsage ./main <path_matrices_file>");
-
-    int32_t *list_m, *d_list_m, *mat_reduced;
-    int32_t num_m = new_matrix_from_file(argv[1], &list_m);
-
-    print_matrices(list_m, num_m);
-    reduce_matrices_seq(list_m, num_m, &mat_reduced);
-    cout << "=======REDUCED=======" << '\n';
-    print_matrices(mat_reduced, 1);
-
-    delete[] list_m;
-    delete[] mat_reduced;
+    cout << "MIN(-6, INT32_T-MAX) = " << min_coisa(-6, 2147483647) << endl;
+    cout << "MIN_CPP(-6, INT32_T-MAX) = " << min(-6, 2147483647) << endl;
     return 0;
 }

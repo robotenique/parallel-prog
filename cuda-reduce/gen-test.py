@@ -11,11 +11,11 @@ def mat2str(mat):
 
 def main():
     if len(sys.argv) < 3:
-        print("Usage: python gen-test.py <num_matrixes> <dest_file>")
+        print("Usage: python gen-test.py <num_matrices> <dest_file>")
         return
     num_mat = int(sys.argv[1])
     dest = sys.argv[2]
-    r = 9
+    r = 10
     f = open(dest, "w")
     f.write(f"{num_mat}\n***\n")
     for i in range(num_mat):
