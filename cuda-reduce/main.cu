@@ -60,8 +60,8 @@ int main(int argc, char const *argv[]) {
         die("Wrong number of arguments!\nUsage ./main <path_matrices_file>");
 
     int32_t *list_m, *d_list_m, *reduced_cuda;
-    int32_t num_blocks = num_m/NUM_THREADS;
     int32_t num_m = new_matrix_from_file(argv[1], &list_m);
+    int32_t num_blocks = num_m/NUM_THREADS;
 
     int32_t  *cuda_result = new int32_t[9*num_blocks]; // To store the reduction of each block
     ecudaMalloc((void **)&d_list_m, 9*num_m*sizeof(int32_t));
