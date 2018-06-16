@@ -1,35 +1,28 @@
 NVCC = nvcc
 CC = g++
-CFLAGS = -lm -O2 -w
-#LDFLAGS = ""
+CFLAGS = -O2 -w
+LDFLAGS = -lm
 .PHONY: clean
 
 all: main
 
 clean:
-	rm -f *.o *~ *.out teste main
-
-teste: teste.o error.o cudaerror.o
-	$(NVCC) -o $@ $^ $(CLFLAGS)
+	rm -f *.o *~ *.out main
 
 main: main.o error.o cudaerror.o macros.o
-	$(NVCC) -o $@ $^ $(CLFLAGS)
+	$(NVCC) -o $@ $^ $(LDFLAGS)
 
 %.o: %.cu %.h
-	$(NVCC) $(CFLAGS) -c $< $(CLFLAGS)
+	$(NVCC) $(CFLAGS) $(LDFLAGS) -c $<
 
 %.o: %.cu
-	$(NVCC) $(CFLAGS) -c $< $(CLFLAGS)
+	$(NVCC) $(CFLAGS) $(LDFLAGS) -c $<
 
 %.o: %.cpp %.h
-	$(CC) $(CFLAGS) -c $< $(CLFLAGS) -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 
 %.o: %.cpp
-	$(CC) $(CFLAGS) -c $< $(CLFLAGS) -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< $(CLFLAGS) -o $@
-
-#DEVICE_ID = 0
-#sizeV=262144
-#sizeM=2048
+	$(CC) $(CFLAGS) $(LDFLAGS) -c $< -o $@

@@ -47,17 +47,10 @@ void reduce_matrices_seq(int32_t *list_m, int32_t num_m, int32_t **dest){
         arr[i%9] = min(arr[i%9], list_m[i]);
 }
 
-void print_matrices(int32_t *list_m, int32_t num_m) {
-    for (size_t i = 0; i < 9*num_m; i++) {
-        cout << list_m[i] << " ";
-        if ((i + 1)%9 == 0)
+void print_matrix(int32_t *matx) {
+    for (size_t i = 0; i < 9; i++) {
+        cout << mtx[i] << " ";
+        if ((i + 1)%3 == 0)
             cout << endl;
     }
-}
-
-bool is_equal(int32_t *a, int32_t *b){
-    for (size_t i = 0; i < 9; i++)
-        if(a[i] != b[i])
-            return false;
-    return true;
 }
