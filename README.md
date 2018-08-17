@@ -6,7 +6,7 @@ This repository has some projects related to Parallel and Concurrent programming
 
 - *frog-puzzle*
 
-    Implementation of the famous [Jumping frog puzzle](https://primefactorisation.com/frogpuzzle/), when each frog is represented as a **thread**. This project isn't a solver of the puzzle (that can easily be solved using classical search), but is to represent a system of independent agents interacting at the same time with a shared environment.
+    Implementation of the famous [Jumping frog puzzle](https://primefactorisation.com/frogpuzzle/), when each frog is represented as a **thread**. This project isn't a solver of the puzzle (that can easily be solved using classical search), but is to represent a system of independent agents interacting at the same time with a shared environment. The project make use of *mutexes* and a *synchronization barrier* to maintain control of the frogs.
 
     <p align="center"> <img src="https://liucs.net/cs101s14/frogs.png" width="500" height="auto" /></p>
 
