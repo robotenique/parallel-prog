@@ -3,10 +3,8 @@
 This repository has some projects related to Parallel and Concurrent programming, using the *pthreads* library in C and C++, *OpenMP* library and **CUDA** for parallel execution in Nvidia GPU's.
 #### Contributors
 
-Juliano Garcia ([robotenique](https://github.com/robotenique))
-
-João Basi ([IceMage144](https://github.com/icemage144))
-
+* **Juliano Garcia** - [robotenique](https://github.com/robotenique)
+* **João Basi** - [IceMage144](https://github.com/icemage144)
 
 ### *Projects*
 
